@@ -1,6 +1,6 @@
 <?php
 
-function resposta($codigo, $ok, $msg, $userInfo) {
+function resposta($codigo, $ok, $msg, $userInfo, $token) {
     header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Headers: *');
@@ -9,7 +9,8 @@ function resposta($codigo, $ok, $msg, $userInfo) {
     echo(json_encode([
         'ok' => $ok,
         'msg' => $msg,
-        'userInfo' => $userInfo
+        'userInfo' => $userInfo,
+        'authorization' => $token,
     ]));
     die;
 }
@@ -17,9 +18,9 @@ function resposta($codigo, $ok, $msg, $userInfo) {
 $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
 $body = file_get_contents('php://input');
-
+$token = 'deslogado';
 if (!$body){
-    resposta(200, false, "corpo nao encontrado", []);}
+    resposta(200, false, "corpo nao encontrado", [], $token);}
 
 
 $body = json_decode($body);
@@ -60,12 +61,13 @@ try {
 
         if ($body->senha === $usuario['senha']) {
             $userInfo = objectInfo($conexao, $body->email);
-            resposta(200, true, "login bem sucedido", objectInfo($conexao, $body->email));
+            $token = "logado";
+            resposta(200, true, "login bem sucedido", $userInfo, $token);
         } else {
-            resposta(400, false, "Senha incorreta!", []);
+            resposta(400, false, "Senha incorreta!", [], $token);
         }
     } else {
-        resposta(400, false, "Email não registrado!", []);
+        resposta(400, false, "Email não registrado!", [], $token);
     }
 } catch (PDOException $e) {
     die("Erro na consulta: " . $e->getMessage());
