@@ -48,7 +48,8 @@ function objectInfo($conexão, $email) {
     return(
     $userInfo = [
         'nome' => $nome,
-        'fotoPerfil' => $fotoPerfil
+        'fotoPerfil' => $fotoPerfil,
+        'id' => $id
     ]);
 }
 
