@@ -1,10 +1,11 @@
 <?php
 
-function resposta($codigo, $ok, $msg, $userInfo, $token) {
-    header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Headers: *');
 
+function resposta($codigo, $ok, $msg, $userInfo, $token) {
+    
     http_response_code($codigo);
     echo(json_encode([
         'ok' => $ok,
@@ -19,14 +20,22 @@ $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
 $body = file_get_contents('php://input');
 $token = 'deslogado';
-if (!$body){
-    resposta(200, false, "corpo nao encontrado", [], $token);}
+
 
 
 $body = json_decode($body);
 
-if (!$body->email || !$body->senha)
-    resposta(400, false, "Dados Invalidos", []);
+if (empty($body->email) && empty($body->senha)){
+    resposta(200, false, "Você deve preencher os campos", [], $token);
+}
+
+if (empty($body->email)){
+    resposta(200, false, "Preencha o campo do e-mail", [], $token);
+}
+
+if (empty($body->senha)){
+    resposta(200, false, "Preencha o campo da senha", [], $token);
+}
 
 $body->email = filter_var($body->email, FILTER_VALIDATE_EMAIL);
 $body->senha = filter_var($body->senha, FILTER_SANITIZE_STRING);
