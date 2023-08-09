@@ -31,6 +31,37 @@ if(!$body)
 
 $body = json_decode($body);
 
+if (empty($body->nome) && empty($body->email) && empty($body->senha)){
+    resposta(200, false, "Você deve preencher os campos");
+}
+
+if (empty($body->nome)){
+    resposta(200, false, "Preencha o campo do Nome");
+}
+
+if (empty($body->email)){
+    resposta(200, false, "Preencha o campo do E-mail");
+}
+
+if (empty($body->senha)){
+    resposta(200, false, "Preencha o campo da Senha");
+}
+
+if (!preg_match('/^[a-zA-Z0-9]/', $body->nome)) {
+    resposta(200, false, "nome com caracteres inválidos");
+}
+
+$consulta = $conexao->prepare('SELECT email FROM usuarios WHERE email = :email');
+
+$consulta->execute([':email' => $body->email]);
+$consulta = $consulta->fetchColumn();
+
+if ($body->email == $consulta){
+    resposta(200, false, "Email já cadastrado");
+}
+
+
+
 $body->nome = filter_var($body->nome,FILTER_SANITIZE_STRING);
 $body->email = filter_var($body->email,FILTER_VALIDATE_EMAIL);
 $body->senha = filter_var($body->senha,FILTER_SANITIZE_STRING);
