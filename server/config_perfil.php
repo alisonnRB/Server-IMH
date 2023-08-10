@@ -1,51 +1,41 @@
 <?php
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+header('Access-Control-Allow-Headers: *');
 
 function resposta($codigo, $ok, $msg) {
     header('Content-Type: application/json');
     http_response_code($codigo);
-    echo(json_encode([
+
+    $response = [
         'ok' => $ok,
         'msg' => $msg,
-    ]));
+    ];
+
+    echo(json_encode($response));
     die;
 }
 
-
 $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-$body = file_get_contents('php://input');
+if (isset($_FILES['image']) && isset($_POST['id']) && isset($_POST['nome'])) {
+    $body = $_POST;
+    $pastaDestino = '../imagens/';
 
+    $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
+    $nomeUnico = $body['id'] . '_' . time() . '.' . $extensao;
 
-    // Verifica se um arquivo foi enviado e se não houve erros no upload
+    $caminhoDestino = $pastaDestino . $nomeUnico;
 
-        // Pasta onde a imagem será salva
-        $pastaDestino = '../imagens/';
-
-        // Obtem a extensão do arquivo
-        $extensao = pathinfo($body->file['image']['name'], PATHINFO_EXTENSION);
-
-        // Cria um nome único baseado no ID do usuário e um timestamp
-        $nomeUnico = $body->id . '_' . time() . '.' . $extensao;
-
-        // Caminho completo para o arquivo na pasta de destino
-        $caminhoDestino = $pastaDestino . $nomeUnico;
-
-        // Move o arquivo temporário para a pasta de destino com o nome único
-        if (move_uploaded_file($body->file['image']['tmp_name'], $caminhoDestino)) {
-            // Aqui você pode realizar a lógica para atualizar o nome do usuário no banco de dados.
-            // Por exemplo, se você estiver usando uma conexão com banco de dados:
-
-            // $stmt = $conexao->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
-            // $stmt->execute([$nome, $id]);
-
-            // Neste exemplo, vou apenas retornar uma resposta JSON simples para indicar sucesso.
-            resposta(200, true, 'Dados atualizados com sucesso!');
-        } else {
-            resposta(500, false, 'Falha ao salvar a imagem.');
-        }
-
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $caminhoDestino)) {
+        $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
+        $stmt->execute([$body['nome'], $nomeUnico, $body['id']]);
+        resposta(200, true, "Dados atualizados com sucesso.");
+    } else {
+        resposta(500, false, "Erro ao fazer upload do arquivo.");
+    }
+} else {
+    resposta(400, false, "Requisição inválida.");
+}
 ?>
