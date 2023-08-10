@@ -1,6 +1,6 @@
 <?php
 
-header('Access-Control-Allow-Origin: http://localhost:3000');
+    header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Headers: *');
 
@@ -56,8 +56,6 @@ function objectInfo($conexão, $email) {
 
     return(
     $userInfo = [
-        'nome' => $nome,
-        'fotoPerfil' => $fotoPerfil,
         'id' => $id
     ]);
 }
