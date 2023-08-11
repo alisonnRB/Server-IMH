@@ -1,8 +1,13 @@
 <?php
+
+    //!
+
     header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Headers: *');
 
+
+    //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
 function resposta($codigo, $ok, $userInfo) {
     http_response_code($codigo);
 
@@ -20,6 +25,8 @@ $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+
+//TODO função que constroi a lista que armazena as informaçoes do usuario
 function objectInfo($conexao, $id) {
     $nome = $conexao->prepare("SELECT nome FROM usuarios WHERE id = :id");
     $nome->execute([':id' => $id]);
@@ -35,6 +42,7 @@ function objectInfo($conexao, $id) {
     ];
 }
 
+//TODO tenta responder
 try {
     resposta(200, true, objectInfo($conexao, $body->id));
 } catch (Exception $e) {

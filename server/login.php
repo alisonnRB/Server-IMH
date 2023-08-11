@@ -1,9 +1,10 @@
 <?php
-
+    
     header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Headers: *');
 
+    //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
 function resposta($codigo, $ok, $msg, $userInfo, $token) {
     
     http_response_code($codigo);
@@ -25,6 +26,7 @@ $token = 'deslogado';
 
 $body = json_decode($body);
 
+//? verifica se estão vazios
 if (empty($body->email) && empty($body->senha)){
     resposta(200, false, "Você deve preencher os campos", [], $token);
 }
@@ -37,22 +39,17 @@ if (empty($body->senha)){
     resposta(200, false, "Preencha o campo da senha", [], $token);
 }
 
+//?verifica tipos
 $body->email = filter_var($body->email, FILTER_VALIDATE_EMAIL);
 $body->senha = filter_var($body->senha, FILTER_SANITIZE_STRING);
 
+//TODO função que busca o id do usuario
 function objectInfo($conexão, $email) {
     $idUser = $conexão->prepare("SELECT id FROM usuarios WHERE email = :email");
     $idUser->execute([':email' => $email]);
 
     $id = $idUser->fetchColumn();
 
-    $nome = $conexão->prepare("SELECT nome FROM usuarios WHERE id = :id");
-    $nome->execute([':id' => $id]);
-    $nome = $nome->fetchColumn();
-
-    $fotoPerfil = $conexão->prepare("SELECT fotoPerfil FROM usuarios WHERE id = :id");
-    $fotoPerfil->execute([':id' => $id]);
-    $fotoPerfil = $fotoPerfil->fetchColumn();
 
     return(
     $userInfo = [
@@ -60,15 +57,25 @@ function objectInfo($conexão, $email) {
     ]);
 }
 
+//? tenta verificar e lida com o erro
 try {
+    //? acessa o email do input
     $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email");
     $consulta->execute([':email' => $body->email]);
 
+    //? pega a consulta e verifica se existe apenas um
     if ($consulta->rowCount() === 1) {
+
+        //? guarda as informaçoes da consulta como lista
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
+        //? verifica se senha e email coicidem
         if ($body->senha === $usuario['senha']) {
+
+            //? monta a resposta
             $userInfo = objectInfo($conexao, $body->email);
+
+            //! NECESARIO CONTRUIR O SISTEMA DE TOKEN DE MANEIRA SEGURA
             $token = "logado";
             resposta(200, true, "login bem sucedido", $userInfo, $token);
         } else {
