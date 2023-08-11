@@ -56,6 +56,15 @@ if (empty($body->senha)){
     resposta(200, false, "Preencha o campo da Senha");
 }
 
+if (empty($body->confSenha)){
+    resposta(200, false, "Preencha o campo de Confirmação de Senha");
+}
+
+//? Verifica se a senha e a confirmação de senha coincidem
+if ($body->senha !== $body->confSenha) {
+    resposta(200, false, "A senha e a confirmação de senha não coincidem");
+}
+
 //? verifica a existencia de caracteres não permitidos no nome
 if (!preg_match('/^[a-zA-Z0-9]/', $body->nome)) {
     resposta(200, false, "nome com caracteres inválidos");
