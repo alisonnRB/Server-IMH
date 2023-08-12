@@ -1,5 +1,5 @@
 <?php
-    //! é necessario ais verificações e lidar com o envio de apenas uma dos inputs
+    //! é necessario mais verificações e lidar com o envio de apenas uma dos inputs
     //! apagar a imagem antiga caso seja alterada
 
     header('Access-Control-Allow-Origin: *');
@@ -33,6 +33,27 @@ if (isset($_FILES['image']) && isset($_POST['id']) && isset($_POST['nome'])) {
     //? arazena o tipo de imagem enviada
     //! VERIFIQUE PARA QUE SEJA POSSIVEL O ENVIO DE TIPOS ESPECIFICOS DE IMAGENS PARA EVITAR INJECTIONS
     $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+
+    //TODO fazendo somente ser enviado tipos especificos de imagens
+    // Caminho completo para o arquivo temporário
+    $arquivoTemporario = $_FILES['image']['tmp_name'];
+
+    // Criar um objeto finfo
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+    // Obter o tipo MIME do arquivo
+    $tipoMIME = finfo_file($finfo, $arquivoTemporario);
+
+    // Fechar o objeto finfo
+    finfo_close($finfo);
+
+    // Array de tipos MIME permitidos
+    $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
+
+    //? informa que não é possivel a imagem pois não é um formato compativel
+    if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
+        resposta(400, false, "Tipo de arquivo não permitido. Apenas imagens JPG, JPEG e PNG");
+    }
 
     //? constroi e guarda um novo nome para a imagem
     $nomeUnico = $body['id'] . '_' . time() . '.' . $extensao;
