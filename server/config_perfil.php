@@ -20,10 +20,7 @@ function resposta($codigo, $ok, $msg) {
 }
 
 $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
-$body = $_POST;
 
-//? caminho para a pasta imagens do server
-$pastaDestino = '../imagens/';
 
 function armazena($id, $imagem, $nome, $nomeArq, $destino){
     //? verifica se há imagem a ser salva
@@ -75,6 +72,12 @@ function armazena($id, $imagem, $nome, $nomeArq, $destino){
 
 //TODO verifica a existencia dos conteudos da pasta temporaria e a salva
 if (isset($_FILES['image']) && isset($_POST['id']) && isset($_POST['nome'])){
+    
+    
+    $body = $_POST;
+
+    //? caminho para a pasta imagens do server
+    $pastaDestino = '../imagens/';
     //TODO verifica se há algo
     if(!empty($_FILES['image'])){
         
