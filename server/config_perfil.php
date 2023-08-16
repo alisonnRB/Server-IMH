@@ -1,5 +1,4 @@
 <?php
-    //! é necessario mais verificações e lidar com o envio de apenas uma dos inputs
     //! apagar a imagem antiga caso seja alterada
 
     header('Access-Control-Allow-Origin: *');
@@ -21,58 +20,98 @@ function resposta($codigo, $ok, $msg) {
 }
 
 $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+$body = $_POST;
+
+//? caminho para a pasta imagens do server
+$pastaDestino = '../imagens/';
+
+function armazena($id, $imagem, $nome, $nomeArq, $destino){
+    //? verifica se há imagem a ser salva
+    if($image == false){
+
+        //? verifica se ha nome a ser salvo
+        if(empty($nome)){
+            resposta(500, false, "Você deve não quer mudar nada? :)")
+        }else{
+            //TODO verifica se há caracteres invalidos
+            if (!preg_match('/^[a-zA-Z0-9]/', $nome)) {
+                resposta(200, false, "nome com caracteres inválidos");
+            }else{
+                //?salva imagem e nome no banco
+                $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
+                $stmt->execute([$nome, $nomeArq, $id]);
+                resposta(200, true, "Dados atualizados com sucesso.");  
+            }
+        }
+    }else{
+        //?tenta mover arquivo e lida com o erro
+        if (move_uploaded_file($imagem, $destino)) {
+
+            //? verifica se existe algo no campo nome
+            if(empty($nome)){
+
+                //? se não houver nome salva apenas o caminho da imagem
+                $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
+                $stmt->execute([$nomeArq, $id]);
+
+                resposta(200, true, "Dados atualizados com sucesso.");
+            }else{
+                //TODO verifica se há caracteres invalidos
+                if (!preg_match('/^[a-zA-Z0-9]/', $nome)) {
+                    resposta(200, false, "nome com caracteres inválidos");
+                }else{
+                    //?salva imagem e nome no banco
+                    $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
+                    $stmt->execute([$nome, $nomeArq, $id]);
+                    resposta(200, true, "Dados atualizados com sucesso.");  
+                }
+            }
+        }else{
+        resposta(500, false, "algo deu errado, tente mais tarde");
+        }
+    }
+}
 
 
 //TODO verifica a existencia dos conteudos da pasta temporaria e a salva
-if (isset($_FILES['image']) && isset($_POST['id']) && isset($_POST['nome'])) {
-    $body = $_POST;
+if (isset($_FILES['image']) && isset($_POST['id']) && isset($_POST['nome'])){
+    //TODO verifica se há algo
+    if(!empty($_FILES['image'])){
+        
+        //? arazena o tipo de imagem enviada
+        $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
-    //? caminho para a pasta imagens do server
-    $pastaDestino = '../imagens/';
+        //? Criar um objeto finfo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
-    //? arazena o tipo de imagem enviada
-    //! VERIFIQUE PARA QUE SEJA POSSIVEL O ENVIO DE TIPOS ESPECIFICOS DE IMAGENS PARA EVITAR INJECTIONS
-    $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        //? Obter o tipo MIME do arquivo
+        $tipoMIME = finfo_file($finfo, $arquivoTemporario);
 
-    //TODO fazendo somente ser enviado tipos especificos de imagens
-    // Caminho completo para o arquivo temporário
-    $arquivoTemporario = $_FILES['image']['tmp_name'];
+        //? Fechar o objeto finfo
+        finfo_close($finfo);
 
-    // Criar um objeto finfo
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        //? Array de tipos MIME permitidos
+        $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
 
-    // Obter o tipo MIME do arquivo
-    $tipoMIME = finfo_file($finfo, $arquivoTemporario);
+        //TODO informa que não é possivel a imagem pois não é um formato compativel
+        if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
+            resposta(400, false, "Tipo de arquivo não permitido.");
 
-    // Fechar o objeto finfo
-    finfo_close($finfo);
+        }else{
+            $arquivoTemporario = $_FILES['image']['tmp_name'];    
+                
+            //? constroi e guarda um novo nome para a imagem
+            $nomeUnico = $body['id'] . '_' . time() . '.' . $extensao;
 
-    // Array de tipos MIME permitidos
-    $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
-
-    //? informa que não é possivel a imagem pois não é um formato compativel
-    if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
-        resposta(400, false, "Tipo de arquivo não permitido. Apenas imagens JPG, JPEG e PNG");
+            //?chama função
+            armazena($body['id'],$_FILES['image']['tmp_name'], $body['nome'], $nomeUnico, $caminhoDestino);
+        }
+    }else{
+        armazena($body['id'],false, $body['nome'], false, false);
     }
-
-    //? constroi e guarda um novo nome para a imagem
-    $nomeUnico = $body['id'] . '_' . time() . '.' . $extensao;
-
-    //? controi e guarda o caminho especifico para o arquivo
-    $caminhoDestino = $pastaDestino . $nomeUnico;
-
-    //TODO move o arquivo para a pasta e lida com o erro
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $caminhoDestino)) {
-
-        //? salva o caminho no bd
-        $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
-        $stmt->execute([$body['nome'], $nomeUnico, $body['id']]);
-
-        resposta(200, true, "Dados atualizados com sucesso.");
-    } else {
-        resposta(500, false, "Erro ao fazer upload do arquivo.");
-    }
+    
 } else {
-    resposta(400, false, "Requisição inválida.");
+    resposta(400, false, "Você deve não quer mudar nada? :)");
 }
+
 ?>
