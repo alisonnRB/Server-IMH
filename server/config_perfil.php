@@ -18,132 +18,127 @@ function resposta($codigo, $ok, $msg) {
     echo(json_encode($response));
     die;
 }
+function oqueAlterar(){
+    $nome = false;
+    $foto =  false;
 
-$conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
-$body = $_POST;
-
-function armazena($id, $imagem, $nome, $nomeArq, $destino, $conexao){
-
-    $fotoPerfil = $conexao->prepare("SELECT fotoPerfil FROM usuarios WHERE id = :id");
-    $fotoPerfil->execute([':id' => $id]);
-    $fotoPerfil = $fotoPerfil->fetchColumn();
-
-    //? verifica se há imagem a ser salva
-    if($imagem == false){
-
-        //? verifica se ha nome a ser salvo
-        if(empty($nome)){
-            resposta(500, false, "Você não quer mudar nada? :)");
-        } else {
-            // TODO verifica se há caracteres inválidos
-            if (!preg_match('/^[a-zA-Z0-9]/', $nome)) {
-                resposta(200, false, "Nome com caracteres inválidos");
-            } else {
-                //? salva nome no banco
-                $stmt = $conexao->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
-                $stmt->execute([$nome, $id]);
-                resposta(200, true, "Dados atualizados com sucesso.");  
-            }
+    //TODO verifica se o id veio
+    if (isset($_POST['id']) || !empty($_POST['id'])){
+        
+        //TODO verfica se há nome para alterar
+        if(isset($_POST['nome']) && !empty($_POST['nome'])){
+            $nome = true;
         }
-    } else {
-        //? tenta mover arquivo e lida com o erro
-        if (move_uploaded_file($imagem, $destino . $nomeArq)) {
-
-            //? verifica se existe algo no campo nome
-            if(empty($nome)) {
-                
-                //? Se houver um arquivo de imagem antigo
-                if (!empty($fotoPerfil)) {
-                    $caminhoAntigo = $destino . $fotoPerfil;
-
-                    //? Deleta o arquivo antigo
-                    if (file_exists($caminhoAntigo) && unlink($caminhoAntigo)) {
-                        //? Arquivo antigo foi apagado com sucesso
-                        $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
-                        $stmt->execute([$nomeArq, $id]);
-                        resposta(200, true, "Dados atualizados com sucesso.");
-                    } else {
-                        resposta(200, true, "Algo deu errado ao excluir o arquivo antigo.");
-                    }
-                } else {
-                    $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
-                    $stmt->execute([$nomeArq, $id]);
-                    resposta(200, true, "Dados atualizados com sucesso.");
-                }
-                
-            } else {
-                //TODO verifica se há caracteres inválidos no nome
-                if (!preg_match('/^[a-zA-Z0-9]/', $nome)) {
-                    resposta(200, false, "Nome com caracteres inválidos");
-                } else {
-                    //? Se houver um arquivo de imagem antigo
-                    if (!empty($fotoPerfil)) {
-                        $caminhoAntigo = $destino . $fotoPerfil;
-
-                        //? Deleta o arquivo antigo
-                        if (file_exists($caminhoAntigo) && unlink($caminhoAntigo)) {
-                            //? Arquivo antigo foi apagado com sucesso
-                            $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
-                            $stmt->execute([$nome, $nomeArq, $id]);
-                            resposta(200, true, "Dados atualizados com sucesso.");  
-                        } else {
-                            resposta(200, true, "Algo deu errado ao excluir o arquivo antigo.");
-                        }
-                    } else {
-                        $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, fotoPerfil = ? WHERE id = ?');
-                        $stmt->execute([$nome, $nomeArq, $id]);
-                        resposta(200, true, "Dados atualizados com sucesso.");  
-                    }
-                }
-            }
-        } else {
-            resposta(500, false, "Algo deu errado, tente mais tarde");
+        if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
+            $foto = true;
         }
+
+    controla($nome, $foto);  
+    }else{
+        resposta(400, false, "há algo errado, tente movamente mais tarde :(");
     }
 }
+function controla($nome, $foto){
+    $okFoto = false;
+    $okNome = false;
+    if($nome == true){
+        if(verificaNome()){
+            $okNome = true;
+        }
+    }
+    if($foto == true){
+        if(verificaFoto()){
+            $okFoto = true;
+        }
+    }
 
-//TODO verifica a existência dos conteúdos da pasta temporária e os salva
-if (isset($_POST['id']) && isset($_POST['nome'])){
+    if($nome == false && $foto == false){
+        resposta(400, false, "não quer mudar nada :/");
+    }
 
-    //? caminho para a pasta imagens do servidor
-    $pastaDestino = '../imagens/';
+    //? cria a conexão
+    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-    //? verifica se há algo
-    if (!empty($_FILES['image']['name'])){
-        
-        //? arazena o tipo de imagem enviada
+    if($foto == true && $okFoto == true){
+
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
         $arquivoTemporario = $_FILES['image']['tmp_name'];
 
-        //? Criar um objeto finfo
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        
-        //? Obter o tipo MIME do arquivo
-        $tipoMIME = finfo_file($finfo, $arquivoTemporario);
 
-        //? Fechar o objeto finfo
-        finfo_close($finfo);
+        $nomeUnico = $_POST['id'] . '_' . time() . '.' . $extensao;
 
-        //? Array de tipos MIME permitidos
-        $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
-
-        //? informa que não é possível a imagem, pois não é um formato compatível
-        if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
-            resposta(400, false, "Tipo de arquivo não permitido.");
-
-        } else {
-            //? constroi e guarda um novo nome para a imagem
-            $nomeUnico = $body['id'] . '_' . time() . '.' . $extensao;
-
-            //? chama a função para armazenar
-            armazena($body['id'], $arquivoTemporario, $body['nome'], $nomeUnico, $pastaDestino, $conexao);
-        }
-    } else {
-        armazena($body['id'], false, $body['nome'], false, $pastaDestino, $conexao);
+        salvaFoto($conexao, $nomeUnico);
     }
+    if($nome == true && $okNome == true){
+        salvaNome($conexao);
+    }
+    resposta(200, true, "Dados atualizados com sucesso.");
     
-} else {
-    resposta(400, false, "Você não quer mudar nada? :)");
 }
+function verificaNome(){
+    if (!preg_match('/^[a-zA-Z0-9]*[a-zA-Z0-9]+[a-zA-Z0-9]*$/', $_POST['nome'])) {
+        resposta(200, false, "Nome com caracteres inválidos");
+    }else{
+        return true;
+    }
+}
+function verificaFoto(){
+    //? arazena o tipo de imagem enviada
+    $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+
+    $arquivoTemporario = $_FILES['image']['tmp_name'];
+
+    //? Criar um objeto finfo
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        
+    //? Obter o tipo MIME do arquivo
+    $tipoMIME = finfo_file($finfo, $arquivoTemporario);
+    
+    //? Fechar o objeto finfo
+    finfo_close($finfo);
+    
+    //? Array de tipos MIME permitidos
+    $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
+
+    //? informa que não é possível a imagem, pois não é um formato compatível
+    if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
+        resposta(400, false, "Tipo de arquivo não permitido.");
+    }else{
+        return true;
+    }
+}
+function salvaFoto($conexao, $nomeUnico){
+
+    $destino = '../imagens/';
+
+    //? busca o caminho da foto antiga
+    $fotoPerfil = $conexao->prepare("SELECT fotoPerfil FROM usuarios WHERE id = :id");
+    $fotoPerfil->execute([':id' => $_POST['id']]);
+    $fotoPerfil = $fotoPerfil->fetchColumn();
+
+    $caminhoAntigo = $destino . $fotoPerfil;
+
+    $arquivoTemporario = $_FILES['image']['tmp_name'];
+
+
+    if (file_exists($caminhoAntigo) && is_file($caminhoAntigo)) {
+        unlink($caminhoAntigo);
+    }
+
+    if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)){
+        //? Arquivo antigo foi apagado com sucesso
+        $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
+        $stmt->execute([$nomeUnico, $_POST['id']]);
+    }else{
+        resposta(500, false, "Algo deu errado com o arquivo.");
+    }
+}
+function salvaNome($conexao){
+    $stmt = $conexao->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
+    $stmt->execute([$_POST['nome'], $_POST['id']]);
+}
+
+oqueAlterar();
+
 ?>
