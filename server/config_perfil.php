@@ -77,7 +77,8 @@ function controla($nome, $foto){
     
 }
 function verificaNome(){
-    if (!preg_match('/^[a-zA-Z0-9]*[a-zA-Z0-9]+[a-zA-Z0-9]*$/', $_POST['nome'])) {
+    $_POST['nome'] = filter_var($_POST['nome'],FILTER_SANITIZE_STRING);
+    if (!preg_match('/^[a-zA-Z0-9\s]*[a-zA-Z0-9\s]+[a-zA-Z0-9\s]*$/', $_POST['nome'])) {
         resposta(200, false, "Nome com caracteres inválidos");
     }else{
         return true;
