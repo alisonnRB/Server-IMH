@@ -67,7 +67,7 @@ function consulta($body, $token){
         resposta(400, false, "Email não registrado!", 'x', $token);
     }
 }
-    //!
+//!
 function geraToken(){
     //! CRIAR SISTEMA DE TOKEN
     return 'logado';
