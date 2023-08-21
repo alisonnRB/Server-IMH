@@ -36,9 +36,14 @@ function objectInfo($id) {
     $fotoPerfil->execute([':id' => $id]);
     $fotoPerfil = $fotoPerfil->fetchColumn();
 
+    $genero = $conexao->prepare("SELECT genero FROM usuarios WHERE id = :id");
+    $genero->execute([':id' => $id]);
+    $genero = $genero->fetchColumn();
+
     return [
         'nome' => $nome,
         'fotoPerfil' => $fotoPerfil,
+        'genero' => $genero,
     ];
 }
 
