@@ -92,8 +92,20 @@ function cadastra($body, $conexao){
     $stm->bindParam('senha', $body->senha);
     $stm->execute();
     
-    resposta(200,true,'msg salvA');
+    $id = $conexao->prepare("SELECT id FROM usuarios WHERE email = :email");
+    $id->execute([':email' => $body->email]);
+    $id = $id->fetchColumn();
 
+    $destina = '../livros/';
+    $nomeDaPasta = $id;
+
+
+    // Verifica se a pasta já existe antes de criar
+    if (!is_dir($destina . $nomeDaPasta)) {
+        mkdir($destina . $nomeDaPasta);
+    } 
+
+    resposta(200,true,'msg salvA');
 }
 
 //TODO recebe os inputs da api
