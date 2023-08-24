@@ -14,7 +14,7 @@ function resposta($codigo, $ok, $msg) {
     echo json_encode($response);
     die;
 }
-
+//! verificar se o id é valido.
 function salva($id, $selecao){
     try {
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");

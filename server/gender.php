@@ -15,7 +15,7 @@ function resposta($codigo, $ok, $gender) {
     echo(json_encode($response));
     die;
 }
-
+//! verificar id
 function quaisGeneros(){
     try{
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
