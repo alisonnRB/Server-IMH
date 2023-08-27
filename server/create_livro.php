@@ -108,7 +108,7 @@ function verificaFoto(){
     }
 }
 function salvaFoto($conexao, $nomeUnico, $consulta){
-    $destino = '../livros/' . $_POST['id'];
+    $destino = '../livros/' . $_POST['id'] . "/";
     $arquivoTemporario = $_FILES['image']['tmp_name'];
 
     if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)){
