@@ -2,7 +2,7 @@
 <?php
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
