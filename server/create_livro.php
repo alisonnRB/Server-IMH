@@ -107,8 +107,14 @@ function verificaFoto(){
         return true;
     }
 }
-function salvaFoto($conexao, $nomeUnico, $consulta){
-    $destino = '../livros/' . $_POST['id'] . "/";
+function salvaFoto($conexao, $nomeUnico, $consulta){ 
+    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '/';
+
+    if (!is_dir($destino)) {
+        mkdir($destino, 0777, true);
+    }
+    
+
     $arquivoTemporario = $_FILES['image']['tmp_name'];
 
     if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)){
