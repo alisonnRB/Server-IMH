@@ -55,9 +55,10 @@ function PrepareCap($body, $conexao){
 
         resposta(200, true);
     } else {
-        resposta(404, false, "Registro não encontrado.");
+        resposta(404, false);
     }
 }
+
 
 function SaveSinopse($body, $conexao){
     $stmt = $conexao->prepare("UPDATE livro_publi SET sinopse = ? WHERE id = ?");
