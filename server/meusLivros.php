@@ -28,7 +28,7 @@ function quaisLivros($body){
     if (isset($body->id) || !empty($body->id)){
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-        $stmt = $conexao->prepare("SELECT id, nome, imagem, genero FROM livro_publi WHERE :id");
+        $stmt = $conexao->prepare("SELECT id, nome, imagem, genero, sinopse, classificacao FROM livro_publi WHERE :id");
         $stmt->execute([':id' => $body->id]);
         $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

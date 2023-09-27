@@ -61,7 +61,9 @@ function controla($nome, $foto, $selecao){
     $consulta->execute([':user_id' => $_POST['id']]);
     $consulta = $consulta->fetchColumn();
 
-
+    if(!empty($_POST['classificacao'])){
+        salvaClasse($conexao, $consulta);
+    }
     if($foto == true && $okFoto == true){
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -129,6 +131,12 @@ function salvaFoto($conexao, $nomeUnico, $consulta){
 function salvaNome($conexao, $consulta){
     $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
     $stm->bindParam(':nome', $_POST['nome']);
+    $stm->bindParam(':id', $consulta);
+    $stm->execute();
+}
+function salvaClasse($conexao, $consulta){
+    $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
+    $stm->bindParam(':classificacao', $_POST['classificacao']);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
