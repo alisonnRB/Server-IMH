@@ -100,7 +100,7 @@ function verificaFoto(){
     }
 }
 function salvaFoto($conexao, $nomeUnico){ 
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '/';
+    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $_POST['idLivro'] . '/';
 
     if (!is_dir($destino)) {
         mkdir($destino, 0777, true);
@@ -132,8 +132,8 @@ function salvaNome($conexao){
     $consulta->execute([':id' => $_POST['idLivro']]);
     $consulta = $consulta->fetchColumn();
 
-    $caminhoAntigo = '../livros/' . $_POST['id'] . "/" . $consulta;
-    $caminhoNovo = '../livros/' . $_POST['id'] . "/" . $_POST['nome'];
+    $caminhoAntigo = '../livros/' . $_POST['id'] . "/" . $consulta . '_' . $_POST['idLivro'];
+    $caminhoNovo = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $_POST['idLivro'];
 
     if (rename($caminhoAntigo, $caminhoNovo)) {
         $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');

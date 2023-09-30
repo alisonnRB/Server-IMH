@@ -18,7 +18,7 @@ function resposta($codigo, $ok, $conteudo) {
 
 function busca($body) {
     // Construa o caminho para o arquivo HTML com base no ID do livro
-    $caminho = '../livros/' . $body->id . '/' . $body->nome .'/'. $body->idLivro . '_'.$body->id .'_'. $body->cap .'.html';
+    $caminho = '../livros/' . $body->id . '/' . $body->nome . '_' . $body->idLivro .'/'. $body->idLivro . '_'.$body->id .'_'. $body->cap .'.html';
 
 
     // Verifique se o arquivo existe

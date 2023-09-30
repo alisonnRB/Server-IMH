@@ -23,7 +23,7 @@ function verifica($body){
 
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
-    $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '/';
+    $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
     $nomeArquivo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $body->cap . '.html';
 
     $texto= json_decode($linha['texto'], true);

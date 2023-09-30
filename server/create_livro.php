@@ -110,7 +110,7 @@ function verificaFoto(){
     }
 }
 function salvaFoto($conexao, $nomeUnico, $consulta){ 
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '/';
+    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/';
 
     if (!is_dir($destino)) {
         mkdir($destino, 0777, true);

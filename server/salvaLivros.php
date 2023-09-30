@@ -31,7 +31,7 @@ function PrepareCap($body, $conexao){
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if ($linha) {
-        $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '/';
+        $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
 
         $titulo = json_decode($linha['texto'], true); // Decodificar JSON existente para array associativo
 
