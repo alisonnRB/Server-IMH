@@ -53,6 +53,9 @@ function controla($nome, $foto, $selecao){
     if(!empty($_POST['classificacao'])){
         salvaClasse($conexao);
     }
+    if(!empty($_POST['color'])){
+        salvaTema($conexao);
+    }
     if($foto == true && $okFoto == true){
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -179,6 +182,12 @@ function salvaPubliFin($conexao){
     $stm = $conexao->prepare('UPDATE livro_publi SET publico = :publico, finalizado = :finalizado WHERE id = :id');
     $stm->bindParam(':publico', $publico, PDO::PARAM_INT);
     $stm->bindParam(':finalizado', $finalizado, PDO::PARAM_INT);
+    $stm->bindParam(':id', $_POST['idLivro']);
+    $stm->execute();
+}
+function salvaTema($conexao){
+    $stm = $conexao->prepare('UPDATE livro_publi SET tema = :tema WHERE id = :id');
+    $stm->bindParam(':tema', $_POST['color']);
     $stm->bindParam(':id', $_POST['idLivro']);
     $stm->execute();
 }
