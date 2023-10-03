@@ -18,19 +18,30 @@ function resposta($codigo, $ok) {
 function qualSave($body) {
     $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
     if($body->cap == 0){
-        SaveSinopse($body, $conexao);
+        $consulta = $conexao->prepare('SELECT user_id FROM livro_publi WHERE id = :id');
+        $consulta->execute([':id' => $body->id]);
+
+        $linha = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        if($linha['user_id'] != $body->idUser){
+            resposta(500, false);
+        }else{
+        SaveSinopse($body, $conexao);}
     }
     elseif ($body->cap >= 1) {
         PrepareCap($body, $conexao);
     }
 }
 function PrepareCap($body, $conexao){
-    $consulta = $conexao->prepare('SELECT texto, nome FROM livro_publi WHERE id = :id');
+    $consulta = $conexao->prepare('SELECT user_id, texto, nome FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);
 
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
-    if ($linha) {
+    if($linha['user_id'] != $body->idUser){
+        resposta(500, false);
+    }else{
+           if ($linha) {
         $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
 
         $titulo = json_decode($linha['texto'], true); // Decodificar JSON existente para array associativo
@@ -57,7 +68,10 @@ function PrepareCap($body, $conexao){
     } else {
         resposta(404, false);
     }
-}
+} 
+    }
+
+
 
 
 function SaveSinopse($body, $conexao){
