@@ -57,6 +57,11 @@ function criaPesquisa($body) {
         $search .= " AND DATEDIFF(NOW(), tempo) <= 7";
     }
 
+    if(!empty($body->classificacao)){
+        $search .= " AND classificacao = :classificacao";
+        $params[':classificacao'] = $body->classificacao;
+    }
+
     quaisLivros($search, $params);
 }
 
