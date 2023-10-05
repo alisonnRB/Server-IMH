@@ -32,7 +32,7 @@ function oqueAlterar(){
         if(isset($_POST['nome']) && !empty($_POST['nome'])){
             $nome = true;
         }
-        if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
+        if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name']) && $_FILES['image']['name'] != ''){
             $foto = true;
         }
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){

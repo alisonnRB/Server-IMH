@@ -45,11 +45,7 @@ function oqueAlterar(){
 }
 function controla($nome, $foto, $selecao){
     $okFoto = false;
-    if($foto == true){
-        if(verificaFoto()){
-            $okFoto = true;
-        }
-    }
+ 
     //? cria a conexão
     $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
@@ -60,7 +56,14 @@ function controla($nome, $foto, $selecao){
     $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
     $consulta->execute([':user_id' => $_POST['id']]);
     $consulta = $consulta->fetchColumn();
-
+    
+    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/';
+    
+   if($foto == true){
+        if(verificaFoto()){
+            $okFoto = true;
+        }
+    }
     if(!empty($_POST['classificacao'])){
         salvaClasse($conexao, $consulta);
     }
@@ -76,6 +79,10 @@ function controla($nome, $foto, $selecao){
     }
     if($nome == true){
         salvaNome($conexao, $consulta);
+
+        if (!is_dir($destino)) {
+            mkdir($destino, 0777, true);
+        }
     }
     if($selecao == true){
         salaGen($conexao, $consulta);
@@ -110,11 +117,7 @@ function verificaFoto(){
     }
 }
 function salvaFoto($conexao, $nomeUnico, $consulta){ 
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/';
 
-    if (!is_dir($destino)) {
-        mkdir($destino, 0777, true);
-    }
     
 
     $arquivoTemporario = $_FILES['image']['tmp_name'];
