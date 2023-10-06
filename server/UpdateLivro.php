@@ -186,9 +186,8 @@ function salvaPubliFin($conexao){
     $stm->execute();
 }
 function salvaTema($conexao){
-    $stm = $conexao->prepare('UPDATE livro_publi SET tema = :tema, tema2 = :tema2 WHERE id = :id');
+    $stm = $conexao->prepare('UPDATE livro_publi SET tema = :tema WHERE id = :id');
     $stm->bindParam(':tema', $_POST['color']);
-    $stm->bindParam(':tema2', $_POST['color2']);
     $stm->bindParam(':id', $_POST['idLivro']);
     $stm->execute();
 }

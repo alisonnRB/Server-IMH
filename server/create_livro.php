@@ -59,14 +59,23 @@ function controla($nome, $foto, $selecao){
     
     $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/';
     
-   if($foto == true){
-        if(verificaFoto()){
-            $okFoto = true;
-        }
-    }
+
     if(!empty($_POST['classificacao'])){
         salvaClasse($conexao, $consulta);
     }
+
+    if($nome == true){
+        salvaNome($conexao, $consulta);
+
+        if (!is_dir($destino)) {
+            mkdir($destino, 0777, true);
+        }
+    }  
+    if($foto == true){
+        if(verificaFoto($destino)){
+            $okFoto = true;
+        }
+    } 
     if($foto == true && $okFoto == true){
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -75,14 +84,7 @@ function controla($nome, $foto, $selecao){
 
         $nomeUnico = $_POST['id'] . '_' . time() . '.' . $extensao;
 
-        salvaFoto($conexao, $nomeUnico, $consulta);
-    }
-    if($nome == true){
-        salvaNome($conexao, $consulta);
-
-        if (!is_dir($destino)) {
-            mkdir($destino, 0777, true);
-        }
+        salvaFoto($conexao, $nomeUnico, $consulta, $destino);
     }
     if($selecao == true){
         salaGen($conexao, $consulta);
@@ -116,7 +118,7 @@ function verificaFoto(){
         return true;
     }
 }
-function salvaFoto($conexao, $nomeUnico, $consulta){ 
+function salvaFoto($conexao, $nomeUnico, $consulta, $destino){ 
 
     
 
