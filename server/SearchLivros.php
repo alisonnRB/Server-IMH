@@ -31,6 +31,8 @@ function criaPesquisa($body) {
     if (!empty($body->nome) && $body->nome != '') {
         $search .= ' AND nome LIKE :nome';
         $params[':nome'] = $body->nome . '%';
+        $search .= ' OR tags LIKE :tags';
+        $params[':tags'] = '%' . $body->nome . '%';
     }
 
     if (!empty($body->Finalizado)) {

@@ -72,6 +72,9 @@ function controla($nome, $foto, $selecao){
     if($selecao == true){
         salvaGen($conexao);
     }
+    if(!empty($_POST['tags'])){
+        salvaTags($conexao);
+    }
     salvaFim($conexao);
     salvaPubliFin($conexao);
 
@@ -191,6 +194,13 @@ function salvaTema($conexao){
     $stm->bindParam(':id', $_POST['idLivro']);
     $stm->execute();
 }
+function salvaTags($conexao){
+    $stm = $conexao->prepare('UPDATE livro_publi SET tags = :tags WHERE id = :id');
+    $stm->bindParam(':tags', $_POST['tags']);
+    $stm->bindParam(':id', $_POST['idLivro']);
+    $stm->execute();
+}
+
 
 oqueAlterar();
 
