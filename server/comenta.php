@@ -25,7 +25,7 @@ function comentar($body){
     $resposta = $body->resposta? 1 : 0;
     
 
-    $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo ) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo)');
+    $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa ) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
     $stm->bindParam(':user', $body->id_user);
     $stm->bindParam(':tipo', $body->tipo);
     $stm->bindParam(':id_ref', $body->id_ref);
@@ -33,6 +33,7 @@ function comentar($body){
     $stm->bindParam(':resposta', $resposta);
     $stm->bindParam(':id_resposta', $body->idResposta);
     $stm->bindParam(':tempo', $data);
+    $stm->bindParam(':conversa', $body->conversa);
 
     $stm->execute();
 
