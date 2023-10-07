@@ -33,6 +33,7 @@ function qualSave($body) {
     }
 }
 function PrepareCap($body, $conexao){
+
     $consulta = $conexao->prepare('SELECT user_id, texto, nome FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);
 
@@ -41,7 +42,7 @@ function PrepareCap($body, $conexao){
     if($linha['user_id'] != $body->idUser){
         resposta(500, false);
     }else{
-           if ($linha) {
+        if ($linha) {
         $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
 
         $titulo = json_decode($linha['texto'], true); // Decodificar JSON existente para array associativo
@@ -51,6 +52,7 @@ function PrepareCap($body, $conexao){
 
         // Codificar de volta para JSON
         $tituloJSON = json_encode($titulo);
+
 
         $stmt = $conexao->prepare("UPDATE livro_publi SET texto = ? WHERE id = ?");
         $stmt->execute([$tituloJSON, $body->id]);
@@ -68,10 +70,8 @@ function PrepareCap($body, $conexao){
     } else {
         resposta(404, false);
     }
-} 
-    }
-
-
+    } 
+}
 
 
 function SaveSinopse($body, $conexao){

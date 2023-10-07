@@ -18,7 +18,7 @@ function resposta($codigo, $ok) {
 function verifica($body){
     $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-    $consulta = $conexao->prepare('SELECT texto, nome FROM livro_publi WHERE id = :id');
+    $consulta = $conexao->prepare('SELECT texto, nome, pronto FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);
 
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
@@ -27,12 +27,13 @@ function verifica($body){
     $nomeArquivo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $body->cap . '.html';
 
     $texto= json_decode($linha['texto'], true);
+    $public= json_decode($linha['pronto'], true);
 
     if(file_exists($nomeArquivo)){
         unlink($nomeArquivo);
         
     }
-    if (reorderList($texto, $body, $conexao)) {
+    if (reorderList($texto, $public, $body, $conexao)) {
         if (!empty($texto)) {
             Renomeando($caminhoPasta, $texto, $body);
         }
@@ -40,20 +41,34 @@ function verifica($body){
     }
 }
 
-function reorderList($texto, $body, $conexao) {
+function reorderList($texto, $public, $body, $conexao) {
     if (isset($texto[$body->cap])) {
         unset($texto[$body->cap]);
     }
+    if (isset($public[$body->cap])) {
+        unset($public[$body->cap]);
+    }
+
     $texto = array_values($texto);
+    $public = array_values($public);
 
     if(count($texto) <= 0){
         $texto = array();
     }else{
         $texto = array_combine(range(1, count($texto)), $texto);
     }
+
+    if(count($public) <= 0){
+        $public = array();
+    }else{
+        $public = array_combine(range(1, count($public)), $public);
+    }
+
     $texto = json_encode($texto);
-    $stmt = $conexao->prepare("UPDATE livro_publi SET texto = ? WHERE id = ?");
-    $stmt->execute([$texto, $body->id]);
+    $public = json_encode($public);
+
+    $stmt = $conexao->prepare("UPDATE livro_publi SET texto = ?, pronto = ? WHERE id = ?");
+    $stmt->execute([$texto, $public, $body->id]);
     return true;
 }
 
