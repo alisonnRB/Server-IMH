@@ -1,19 +1,18 @@
 <?php
-date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 // Função que encerra as operações e envia uma resposta para a API trabalhar
-function resposta($codigo, $ok, $msg, $livros) {
+function resposta($codigo, $ok, $msg, $users) {
     http_response_code($codigo);
     header('Content-Type: application/json');
 
     $response = [
         'ok' => $ok,
         'msg' => $msg,
-        'livros' => $livros,
+        'users' => $users,
     ];
 
     echo(json_encode($response));
@@ -25,20 +24,31 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 
-function BuscaPessoa($search, $params){
+function Pesquisa($body){
     try {
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+
+        $search = '';
+        $params = array();
+    
+        if ($body->nome != '') {
+            $search .= 'nome LIKE :nome';
+            $params[':nome'] = '%' . $body->nome . '%';
+        } else {
+            // Se $body->nome for vazio, não aplicar filtro
+            $search .= '1'; // Isso é verdadeiro para todos os registros
+        }
 
         $sql = "SELECT id, nome, fotoPerfil FROM usuarios WHERE $search";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
-        $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        resposta(200, true, "deu certo", $livros);
+        resposta(200, true, "deu certo", $users);
     } catch (Exception $e) {
         resposta(500, false, null, null);
     }
 }
 
-BuscaPessoa($body);
+Pesquisa($body);
 ?>

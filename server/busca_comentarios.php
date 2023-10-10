@@ -20,7 +20,7 @@ function busca($body){
     $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
     
-    $stmt = $conexao->prepare("SELECT id, id_ref, user, texto, resposta, id_resposta, tempo, conversa FROM comentarios WHERE id_ref = :id_ref AND tipo = :tipo");
+    $stmt = $conexao->prepare("SELECT id, id_ref, user, texto, resposta, id_resposta, tempo, conversa, curtidas FROM comentarios WHERE id_ref = :id_ref AND tipo = :tipo");
     $stmt->execute([':id_ref' => $body->id, ':tipo' => $body->tipo]);
     $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
