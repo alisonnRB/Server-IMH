@@ -19,8 +19,7 @@ function resposta($codigo, $ok, $curtidas) {
 function busca($body) {
     $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-    $consulta = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE id_user = :id_user AND id_ref = :id_ref AND tipo = :tipo");
-    $consulta->bindParam(':id_user', $body->id_user);
+    $consulta = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE id_ref = :id_ref AND tipo = :tipo");
     $consulta->bindParam(':id_ref', $body->id_ref);
     $consulta->bindParam(':tipo', $body->tipo);
     $consulta->execute();

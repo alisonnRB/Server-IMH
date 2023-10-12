@@ -164,10 +164,14 @@ function salaGen($conexao, $consulta){
     }
 
 function salvaFim($conexao, $consulta){
+    $a = array();
+    $a = json_encode($a);
     $data = date('Y-m-d H:i:s');
-    $stm = $conexao->prepare('UPDATE livro_publi SET tempo = :tempo WHERE id = :id');
+    $stm = $conexao->prepare('UPDATE livro_publi SET tempo = :tempo, texto = :texto, pronto = :pronto WHERE id = :id');
     $stm->bindParam(':tempo', $data);
     $stm->bindParam(':id', $consulta);
+    $stm->bindParam(':texto', $a);
+    $stm->bindParam(':pronto', $a);
     $stm->execute();
 }
 oqueAlterar();
