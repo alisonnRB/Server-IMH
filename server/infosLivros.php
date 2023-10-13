@@ -20,7 +20,7 @@ function quaisGeneros($body) {
     try {
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-        $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, texto, sinopse, classificacao, pronto, publico, finalizado, tema, tags, curtidas FROM livro_publi WHERE id = :id ");
+        $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, texto, sinopse, classificacao, pronto, publico, finalizado, tema, tags, curtidas, favoritos FROM livro_publi WHERE id = :id ");
         $stmt->execute([':id' => $body->idLivro]);
         $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
 

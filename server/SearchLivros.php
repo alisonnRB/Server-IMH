@@ -71,7 +71,7 @@ function quaisLivros($search, $params){
     try {
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
-        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas FROM livro_publi WHERE $search";
+        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos FROM livro_publi WHERE $search";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
         $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);

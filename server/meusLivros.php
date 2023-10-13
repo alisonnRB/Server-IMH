@@ -24,11 +24,11 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 function quaisLivros($body){
+    //! verificar se é publico quando o livro não for seu
     try{
     if (isset($body->id) || !empty($body->id)){
         $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
-
-        $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas FROM livro_publi WHERE user_id = :id");
+        $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos FROM livro_publi WHERE user_id = :id");
         $stmt->execute([':id' => $body->id]);
         $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
