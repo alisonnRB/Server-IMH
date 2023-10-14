@@ -40,10 +40,15 @@ function objectInfo($id) {
     $genero->execute([':id' => $id]);
     $genero = $genero->fetchColumn();
 
+    $seguidores = $conexao->prepare("SELECT seguidores FROM usuarios WHERE id = :id");
+    $seguidores->execute([':id' => $id]);
+    $seguidores = $seguidores->fetchColumn();
+
     return [
         'nome' => $nome,
         'fotoPerfil' => $fotoPerfil,
         'genero' => $genero,
+        'seguidores' => $seguidores,
     ];
 }
 

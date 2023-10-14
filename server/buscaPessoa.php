@@ -39,7 +39,7 @@ function Pesquisa($body){
             $search .= '1'; // Isso é verdadeiro para todos os registros
         }
 
-        $sql = "SELECT id, nome, fotoPerfil FROM usuarios WHERE $search";
+        $sql = "SELECT id, nome, fotoPerfil, seguidores FROM usuarios WHERE $search";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

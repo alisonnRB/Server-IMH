@@ -1,0 +1,40 @@
+<?php
+
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: POST');
+
+function userSegui() {
+    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $consulta = $conexao->prepare("SELECT id FROM usuarios");
+    $consulta->execute();
+    $livros = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($livros as $livro) {
+        salva($conexao, $livro['id']);
+    }
+}
+
+function salva($conexao, $id) {
+
+    $sql = "SELECT COUNT(*) AS total FROM seguidores WHERE id_ref = :id";   
+    
+    $consulta = $conexao->prepare($sql);
+    $consulta->bindParam(':id', $id, PDO::PARAM_INT);
+    $consulta->execute();
+    $resultado = $consulta->fetchColumn();
+
+
+    $stm = "UPDATE usuarios SET seguidores = :seguidores WHERE id = :id";
+    $stmt = $conexao->prepare($stm);
+    $stmt->bindParam(':seguidores', $resultado, PDO::PARAM_INT);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+function alterar(){
+    userSegui();
+}
+
+alterar();
+?>
