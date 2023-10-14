@@ -39,7 +39,7 @@ function quaisLivros($body){
             $numeroChave = 0;
 
             foreach ($livros as $livro) {
-                $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos FROM livro_publi WHERE id = :id");
+                $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE id = :id");
                 $stmt->execute([':id' => $livro['id_livro']]);
                 $livroDados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
