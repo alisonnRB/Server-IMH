@@ -70,7 +70,7 @@ function validar_img($img){
         }
     }
     else {
-        return(false, "Imagem não existe")
+        return(false, "Imagem não existe");
     }
 }
     //? arazena o tipo de imagem enviada
