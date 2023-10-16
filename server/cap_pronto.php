@@ -1,22 +1,12 @@
 <?php
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
-function resposta($codigo, $ok) {
-    http_response_code($codigo);
-
-    $response = [
-        'ok' => $ok,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
-
 function salvaP($body) {
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", ""); 
+    $conexao = conecta_bd(); 
 
     $consulta = $conexao->prepare('SELECT user_id, pronto FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->idLivro]);

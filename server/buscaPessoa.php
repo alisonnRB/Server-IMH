@@ -1,23 +1,12 @@
 <?php
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 // Função que encerra as operações e envia uma resposta para a API trabalhar
-function resposta($codigo, $ok, $msg, $users) {
-    http_response_code($codigo);
-    header('Content-Type: application/json');
 
-    $response = [
-        'ok' => $ok,
-        'msg' => $msg,
-        'users' => $users,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 
 // Recebe os inputs da API
 $body = file_get_contents('php://input');
@@ -26,7 +15,7 @@ $body = json_decode($body);
 
 function Pesquisa($body){
     try {
-        $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+        $conexao = conecta_bd();
 
         $search = '';
         $params = array();
@@ -44,9 +33,9 @@ function Pesquisa($body){
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        resposta(200, true, "deu certo", $users);
+        resposta(200, true, $users);
     } catch (Exception $e) {
-        resposta(500, false, null, null);
+        resposta(500, false, null);
     }
 }
 

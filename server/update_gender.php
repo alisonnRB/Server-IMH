@@ -1,23 +1,15 @@
 <?php
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
-function resposta($codigo, $ok, $msg) {
-    http_response_code($codigo);
 
-    $response = [
-        'ok' => $ok,
-        'msg' => $msg,
-    ];
-
-    echo json_encode($response);
-    die;
-}
 //! verificar se o id é valido.
 function salva($id, $selecao){
     try {
-        $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+        $conexao = conecta_bd();
 
         $lista = array();
         

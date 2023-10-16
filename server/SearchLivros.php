@@ -1,24 +1,13 @@
 <?php
 date_default_timezone_set('America/Sao_Paulo');
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 // Função que encerra as operações e envia uma resposta para a API trabalhar
-function resposta($codigo, $ok, $msg, $livros) {
-    http_response_code($codigo);
-    header('Content-Type: application/json');
 
-    $response = [
-        'ok' => $ok,
-        'msg' => $msg,
-        'livros' => $livros,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 
 // Recebe os inputs da API
 $body = file_get_contents('php://input');
@@ -69,7 +58,7 @@ function criaPesquisa($body) {
 
 function quaisLivros($search, $params){
     try {
-        $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+        $conexao = conecta_bd();
 
         $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search";
         $stmt = $conexao->prepare($sql);

@@ -1,24 +1,15 @@
 <?php
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function resposta($codigo, $ok) {
-    http_response_code($codigo);
-
-    $response = [
-        'ok' => $ok,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 
 function comentar($body){
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $conexao = conecta_bd();
 
     $data = date('Y-m-d H:i:s');
 

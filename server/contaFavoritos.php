@@ -1,11 +1,11 @@
 <?php
-
+include "./conexão/conexao.php";
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
 function Livroslike() {
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $conexao = conecta_bd();
     $consulta = $conexao->prepare("SELECT id FROM livro_publi");
     $consulta->execute();
     $livros = $consulta->fetchAll(PDO::FETCH_ASSOC);

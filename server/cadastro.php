@@ -1,6 +1,7 @@
 <?php
 //* faz o cadastro dos usuarios
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
 function resposta($codigo, $ok, $msg){
     
@@ -22,7 +23,7 @@ function existe($body){
     resposta(200, false, "corpo não encontrado");
     }
 
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $conexao = conecta_bd();
 
 
         if(verificacao($body, $conexao) == true){

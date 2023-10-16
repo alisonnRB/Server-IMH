@@ -1,20 +1,10 @@
 <?php
-
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function resposta($codigo, $ok, $conteudo) {
-    http_response_code($codigo);
 
-    $response = [
-        'ok' => $ok,
-        'conteudo' => $conteudo,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 
 function busca($body) {
     // Construa o caminho para o arquivo HTML com base no ID do livro

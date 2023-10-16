@@ -1,6 +1,7 @@
 
 <?php
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: *');
@@ -8,18 +9,7 @@ header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
-function resposta($codigo, $ok, $msg) {
-    header('Content-Type: application/json');
-    http_response_code($codigo);
 
-    $response = [
-        'ok' => $ok,
-        'msg' => $msg,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 function oqueAlterar(){
     $nome = false;
     $foto =  false;
@@ -48,7 +38,7 @@ function controla($nome, $foto, $selecao){
         }
     }
     //? cria a conexão
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $conexao = conecta_bd();
 
     if(!empty($_POST['classificacao'])){
         salvaClasse($conexao);

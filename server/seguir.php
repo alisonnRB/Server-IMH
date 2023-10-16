@@ -1,23 +1,13 @@
 <?php
-
-
+include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function resposta($codigo, $ok) {
-    http_response_code($codigo);
-
-    $response = [
-        'ok' => $ok,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
 
 function seguir($body){
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+    $conexao = conecta_bd();
 
     $consulta = $conexao->prepare('SELECT * FROM seguidores WHERE user_id = :id_user AND id_ref = :id_ref');
     $consulta->bindParam(':id_user', $body->id_user);
