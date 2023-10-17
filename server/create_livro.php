@@ -9,9 +9,9 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
-// TODO função que encerra as operações e envia uma resposta para a API trabalhar
+oqueAlterar();
 
- function oqueAlterar(){
+function oqueAlterar(){
     $nome = false;
     $foto =  false;
     $selecao = false;
@@ -62,11 +62,16 @@ function controla($nome, $foto, $selecao){
             mkdir($destino, 0777, true);
         }
     }  
+
     if($foto == true){
-        if(verificaFoto($destino)){
+        $Img = validar_img($_FILES['image']);
+        if(!$Img[0]){
             $okFoto = true;
+        }else{
+            resposta(400, false, $Img[1]);
         }
-    } 
+    }
+
     if($foto == true && $okFoto == true){
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -84,34 +89,8 @@ function controla($nome, $foto, $selecao){
 
     resposta(200, true, "Dados atualizados com sucesso.");
 }
-function verificaFoto(){
-    //? arazena o tipo de imagem enviada
-    $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
-    $arquivoTemporario = $_FILES['image']['tmp_name'];
-
-    //? Criar um objeto finfo
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        
-    //? Obter o tipo MIME do arquivo
-    $tipoMIME = finfo_file($finfo, $arquivoTemporario);
-    
-    //? Fechar o objeto finfo
-    finfo_close($finfo);
-    
-    //? Array de tipos MIME permitidos
-    $tiposMIMEPermitidos = array('image/jpeg', 'image/png');
-
-    //? informa que não é possível a imagem, pois não é um formato compatível
-    if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
-        resposta(400, false, "Tipo de arquivo não permitido.");
-    }else{
-        return true;
-    }
-}
 function salvaFoto($conexao, $nomeUnico, $consulta, $destino){ 
-
-    
 
     $arquivoTemporario = $_FILES['image']['tmp_name'];
 
@@ -124,18 +103,25 @@ function salvaFoto($conexao, $nomeUnico, $consulta, $destino){
         resposta(500, false, "Algo deu errado com o arquivo.");
     }
 }
+
 function salvaNome($conexao, $consulta){
     $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
     $stm->bindParam(':nome', $_POST['nome']);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
+
 function salvaClasse($conexao, $consulta){
+    $classe = verificar_string($_POST['classificacao']);
+    if(!$classe[0]){
+        return;
+    }
     $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
-    $stm->bindParam(':classificacao', $_POST['classificacao']);
+    $stm->bindParam(':classificacao', $classe);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
+
 function salaGen($conexao, $consulta){
         $lista = array();
 
@@ -152,7 +138,7 @@ function salaGen($conexao, $consulta){
         $stmt = $conexao->prepare('UPDATE livro_publi SET genero = ? WHERE id = ?');
         $stmt->execute([$lista, $consulta]);
 
-    }
+}
 
 function salvaFim($conexao, $consulta){
     $a = array();
@@ -165,5 +151,5 @@ function salvaFim($conexao, $consulta){
     $stm->bindParam(':pronto', $a);
     $stm->execute();
 }
-oqueAlterar();
+
 ?>
