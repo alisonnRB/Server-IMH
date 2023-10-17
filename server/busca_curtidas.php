@@ -11,7 +11,7 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-$busca_curtidas = fn($body) => {
+function busca_curtidas($body) {
     $conexao = conecta_bd();
 
     $id_ref = validar_number($body->id_ref);
@@ -36,5 +36,5 @@ $busca_curtidas = fn($body) => {
     resposta(200, true, $resultado);
     }
 }
-
+busca_curtidas($body);
 ?>

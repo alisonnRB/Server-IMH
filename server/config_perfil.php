@@ -9,7 +9,7 @@ header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
 
-$oqueAlterar = fn ()=>{
+function oqueAlterar(){
     $nome = false;
     $foto =  false;
 
@@ -131,6 +131,6 @@ function salvaNome($conexao){
     $stmt = $conexao->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
     $stmt->execute([$_POST['nome'], $_POST['id']]);
 }
-
+oqueAlterar();
 
 ?>

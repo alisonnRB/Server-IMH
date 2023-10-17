@@ -46,7 +46,7 @@ function salva($conexao, $tabela, $id) {
     $stmt->execute();
 }
 
-$alterar = fn ()=>{
+function alterar(){
     $conexao = conecta_bd();
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
@@ -55,4 +55,5 @@ $alterar = fn ()=>{
     comentariolike($conexao);
     }
 }
+alterar();
 ?>

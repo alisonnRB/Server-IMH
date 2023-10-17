@@ -10,7 +10,7 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-$busca_conteudos = fn($body) => {
+function busca_conteudos($body){
 
     $id = validar_number($body->id);
     $nome = validar_string($body->nome);
@@ -46,5 +46,5 @@ $busca_conteudos = fn($body) => {
         }
     }
 }
-
+busca_conteudos($body);
 ?>

@@ -11,15 +11,15 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-$comentar = fn ($body)=>{
+function comentar($body){
     $conexao = conecta_bd();
     
-    $id = validar_number($body->$id_user);
-    $tipo = validar_string($body->$tipo);
-    $id_ref = validar_number($body->$id_ref);
-    $texto = validar_string($body->$texto);
-    $id_resposta validar_number($body->$idResposta);
-    $conversa = validar_number($body->$conversa);
+    $id = validar_number($body->id_user);
+    $tipo = validar_string($body->tipo);
+    $id_ref = validar_number($body->id_ref);
+    $texto = validar_string($body->texto);
+    $id_resposta validar_number($body->idResposta);
+    $conversa = validar_number($body->conversa);
 
     if (!$id[0]) {
         resposta(400, false, $id[1]);
@@ -66,5 +66,5 @@ $comentar = fn ($body)=>{
 
     }
 
-   
+   comentar($body);
 ?>

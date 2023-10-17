@@ -16,7 +16,7 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 
-$Busca_usuarios = fn($body) => {
+function Busca_usuarios ($body){
     $conexao = conecta_bd();
 
     $nome = validar_string($body->nome);
@@ -46,4 +46,5 @@ $Busca_usuarios = fn($body) => {
             resposta(200, true, $users);
         }
     }
+    Busca_usuarios($body);
 ?>
