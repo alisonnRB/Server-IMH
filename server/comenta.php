@@ -18,7 +18,7 @@ function comentar($body){
     $tipo = validar_string($body->tipo);
     $id_ref = validar_number($body->id_ref);
     $texto = validar_string($body->texto);
-    $id_resposta validar_number($body->idResposta);
+    $id_resposta = validar_number($body->idResposta);
     $conversa = validar_number($body->conversa);
 
     if (!$id[0]) {
@@ -33,8 +33,8 @@ function comentar($body){
     if (!$texto[0]) {
         resposta(400, false, $texto[1]);
     }
-    if (!$idresposta[0]) {
-        resposta(400, false, $idresposta[1]);
+    if (!$idResposta[0]) {
+        resposta(400, false, $idResposta[1]);
     }
     if (!$conversa[0]) {
         resposta(400, false, $conversa[1]);

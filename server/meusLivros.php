@@ -17,6 +17,9 @@ function quaisLivros($body){
     try{
     if (isset($body->id) || !empty($body->id)){
         $conexao = conecta_bd();
+        if (!$conexao) {
+            resposta(500, false, "Houve um problema ao conectar ao servidor");
+        } else {
         $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE user_id = :id");
         $stmt->execute([':id' => $body->id]);
         $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -24,6 +27,7 @@ function quaisLivros($body){
 
         resposta(200, true, "deu certo", $stmt);
 
+        }
     }}catch (Exception $e) {
         resposta(500, false, null, null);
     }

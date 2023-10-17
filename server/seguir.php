@@ -8,6 +8,9 @@ header('Access-Control-Allow-Methods: POST');
 
 function seguir($body){
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
     $consulta = $conexao->prepare('SELECT * FROM seguidores WHERE user_id = :id_user AND id_ref = :id_ref');
     $consulta->bindParam(':id_user', $body->id_user);
@@ -28,6 +31,7 @@ function seguir($body){
 
     resposta(200, true);
 
+}
 }
 
 $body = file_get_contents('php://input');

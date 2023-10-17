@@ -59,6 +59,9 @@ function criaPesquisa($body) {
 function quaisLivros($search, $params){
     try {
         $conexao = conecta_bd();
+        if (!$conexao) {
+            resposta(500, false, "Houve um problema ao conectar ao servidor");
+        } else {
 
         $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search";
         $stmt = $conexao->prepare($sql);
@@ -66,7 +69,7 @@ function quaisLivros($search, $params){
         $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         resposta(200, true, "deu certo", $livros);
-    } catch (Exception $e) {
+    }} catch (Exception $e) {
         resposta(500, false, null, null);
     }
 }

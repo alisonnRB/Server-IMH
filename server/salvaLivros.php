@@ -9,6 +9,9 @@ header('Access-Control-Allow-Headers: *');
 //! verificar id
 function qualSave($body) {
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
     if($body->cap == 0){
         $consulta = $conexao->prepare('SELECT user_id FROM livro_publi WHERE id = :id');
         $consulta->execute([':id' => $body->id]);
@@ -23,6 +26,7 @@ function qualSave($body) {
     elseif ($body->cap >= 1) {
         PrepareCap($body, $conexao);
     }
+}
 }
 function PrepareCap($body, $conexao){
 

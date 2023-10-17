@@ -1,5 +1,5 @@
 <?php
-
+include "./conexão/conexao.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
@@ -18,7 +18,7 @@ function resposta($codigo, $ok, $userInfo) {
     die;
 }
 
-$conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+$conexao = conecta_bd();
 
 $body = file_get_contents('php://input');
 $body = json_decode($body);
@@ -26,8 +26,10 @@ $body = json_decode($body);
 
 //TODO função que constroi a lista que armazena as informaçoes do usuario
 function objectInfo($id) {
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
-    
+    $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
     $nome = $conexao->prepare("SELECT nome FROM usuarios WHERE id = :id");
     $nome->execute([':id' => $id]);
     $nome = $nome->fetchColumn();
@@ -51,6 +53,7 @@ function objectInfo($id) {
         'genero' => $genero,
         'seguidores' => $seguidores,
     ];
+    }
 }
 
 //TODO tenta responder

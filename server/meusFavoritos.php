@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
-//TODO função que encerra as operações e enciar umas resposta para a api trabalhar
+//TODO função que encerra as operações e enviar umas resposta para a api trabalhar
 
 
 //TODO recebe os inputs da api
@@ -18,6 +18,9 @@ function quaisLivros($body){
         if (isset($body->id) || !empty($body->id)){
 
             $conexao = conecta_bd();
+            if (!$conexao) {
+                resposta(500, false, "Houve um problema ao conectar ao servidor");
+            } else {
 
             $consulta = $conexao->prepare("SELECT id_livro FROM favoritos WHERE user_id = :user_id");
             $consulta->bindParam(':user_id', $body->id, PDO::PARAM_INT);
@@ -38,7 +41,8 @@ function quaisLivros($body){
                 }
             }
             resposta(200, true, "deu certo", $livrosObj);
-        }
+            }
+    }
     }catch (Exception $e) {
         resposta(500, false, null, null);
     }
