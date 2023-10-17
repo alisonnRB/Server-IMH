@@ -9,6 +9,9 @@ header('Access-Control-Allow-Methods: POST');
 
 function visu($body){
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
 
     $stmt = $conexao->prepare('UPDATE livro_publi SET visus = visus + 1 WHERE id = ?');
@@ -17,6 +20,7 @@ function visu($body){
 
     resposta(200, true);
 
+}
 }
 
 $body = file_get_contents('php://input');

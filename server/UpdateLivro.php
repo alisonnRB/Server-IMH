@@ -39,6 +39,9 @@ function controla($nome, $foto, $selecao){
     }
     //? cria a conexão
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
     if(!empty($_POST['classificacao'])){
         salvaClasse($conexao);
@@ -69,6 +72,7 @@ function controla($nome, $foto, $selecao){
     salvaPubliFin($conexao);
 
     resposta(200, true, "Dados atualizados com sucesso.");
+}
 }
 function verificaFoto(){
     //? arazena o tipo de imagem enviada

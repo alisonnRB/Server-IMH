@@ -10,6 +10,9 @@ header('Access-Control-Allow-Headers: *');
 function salva($id, $selecao){
     try {
         $conexao = conecta_bd();
+        if (!$conexao) {
+            resposta(500, false, "Houve um problema ao conectar ao servidor");
+        } else {
 
         $lista = array();
         
@@ -25,7 +28,7 @@ function salva($id, $selecao){
         $stmt->execute([$lista, $id]);
         
         resposta(200, true, 'Salvo com sucesso');
-    } catch (Exception $e) {
+    }} catch (Exception $e) {
         resposta(500, false, 'Algo deu errado :(');
     }
 }
