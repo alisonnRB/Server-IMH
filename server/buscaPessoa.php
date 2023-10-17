@@ -15,6 +15,8 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+Busca_usuarios($body);
+
 
 function Busca_usuarios ($body){
     $conexao = conecta_bd();
@@ -46,5 +48,4 @@ function Busca_usuarios ($body){
             resposta(200, true, $users);
         }
     }
-    Busca_usuarios($body);
 ?>

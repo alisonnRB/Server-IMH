@@ -10,6 +10,8 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+busca_conteudos($body);
+
 function busca_conteudos($body){
 
     $id = validar_number($body->id);
@@ -46,5 +48,5 @@ function busca_conteudos($body){
         }
     }
 }
-busca_conteudos($body);
+
 ?>

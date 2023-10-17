@@ -1,15 +1,19 @@
 <?php
+date_default_timezone_set('America/Sao_Paulo');
+
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./valicações/validacoes.php";
 
-date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
+
 $body = file_get_contents('php://input');
 $body = json_decode($body);
+
+comentar($body);
 
 function comentar($body){
     $conexao = conecta_bd();
@@ -18,7 +22,7 @@ function comentar($body){
     $tipo = validar_string($body->tipo);
     $id_ref = validar_number($body->id_ref);
     $texto = validar_string($body->texto);
-    $id_resposta validar_number($body->idResposta);
+    $id_resposta = validar_number($body->idResposta);
     $conversa = validar_number($body->conversa);
 
     if (!$id[0]) {
@@ -62,9 +66,6 @@ function comentar($body){
     
         resposta(200, true, "Deu certo");
     }
-    
 
-    }
-
-   comentar($body);
+}
 ?>

@@ -13,8 +13,9 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+verificacao_de_dados($body);
 
-$verificacao_de_dados = fn($body) => { 
+function verificacao_de_dados($body){ 
     if (empty($body->nome) && empty($body->email) && empty($body->senha)){
         resposta(200, false, "Você deve preencher os campos");
     }
@@ -88,5 +89,5 @@ function cadastrar($conexao, $nome, $email, $senha){
     }catch(Exception $e){
         resposta(500, false, "algo deu errado");
     }
-    
+}
 ?>

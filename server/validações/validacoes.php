@@ -1,15 +1,14 @@
 <?php
+
 function validar_string ($string, $type){
     if (isset($string) && !empty($string)){
         if ($type == "nome"){
             $string = filter_var($string, FILTER_SANITIZE_STRING);
             if (!preg_match('/^[a-zA-Z0-9\s]*[a-zA-Z0-9\s]+[a-zA-Z0-9\s]*$/', $string)) {
                 return ($string);
+            }else {
+                return [false, "Possui um caracter inválido"];
             }
-            else {
-                return (false, "Possui um caracter inválido");
-            }
-        
         } 
         else if ($type == "email") {
             $string = filter_var($string,FILTER_VALIDATE_EMAIL);
@@ -21,7 +20,7 @@ function validar_string ($string, $type){
         }
     }
     else {
-        return (false, "String não existe");
+        return [false, "String não existe"];
     }
     
 };
@@ -37,11 +36,11 @@ function validar_number($numero){
             return ($numero);
         }
         else {
-            return (false, "Tipo indefinido");
+            return [false, "Tipo indefinido"];
         }
     }
     else {
-        return (false, "Não existe");
+        return [false, "Não existe"];
     }
 }
 
@@ -63,13 +62,13 @@ function validar_img($img){
 
         //? informa que não é possível a imagem, pois não é um formato compatível
         if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
-            return(false, "Tipo de arquivo não permitido.");
+            return [false, "Tipo de arquivo não permitido."];
         }else{
             return (true);
         }
     }
     else {
-        return(false, "Imagem não existe");
+        return[false, "Imagem não existe"];
     }
 }
     //? arazena o tipo de imagem enviada
