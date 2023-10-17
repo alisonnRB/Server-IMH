@@ -11,7 +11,7 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-function a($body){
+function busca_comentarios($body){
     $conexao = conecta_bd();
 
     $id = validar_number($body->id);
@@ -32,6 +32,6 @@ function a($body){
 
         resposta(200, true, $stmt);
     }
-};
-
+}
+busca_comentarios($body);
 ?>

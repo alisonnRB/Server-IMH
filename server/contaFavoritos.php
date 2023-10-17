@@ -4,8 +4,7 @@ header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function Livroslike() {
-    $conexao = conecta_bd();
+function Livroslike($conexão) {
     $consulta = $conexao->prepare("SELECT id FROM livro_publi");
     $consulta->execute();
     $livros = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -33,8 +32,8 @@ function salva($conexao, $id) {
 }
 
 function alterar(){
-    Livroslike();
+    $conexao = conecta_bd();
+    Livroslike($conexão);
 }
-
 alterar();
 ?>

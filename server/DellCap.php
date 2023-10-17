@@ -1,6 +1,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./valicações/validacoes.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
@@ -8,7 +9,9 @@ header('Access-Control-Allow-Headers: *');
 
 function verifica($body){
     $conexao = conecta_bd();
-
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
     $consulta = $conexao->prepare('SELECT texto, nome, pronto FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);
 
@@ -31,7 +34,7 @@ function verifica($body){
         resposta(200, true);
     }
 }
-
+}
 function reorderList($texto, $public, $body, $conexao) {
     if (isset($texto[$body->cap])) {
         unset($texto[$body->cap]);
@@ -78,6 +81,5 @@ function Renomeando($caminhoPasta, $texto, $body){
 
 $body = file_get_contents('php://input');
 $body = json_decode($body);
-
-verifica($body);
+    verifica($body);
 ?>

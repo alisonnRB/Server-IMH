@@ -11,7 +11,7 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-$salva_cap_pronto = fn($body) => {
+function salva_cap_pronto ($body){
     $conexao = conecta_bd(); 
 
     $idLivro = verificar_number($body->idLivro);
@@ -39,4 +39,5 @@ $salva_cap_pronto = fn($body) => {
         }
     }
 }
+salva_cap_pronto($body);
 ?>

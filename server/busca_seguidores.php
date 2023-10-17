@@ -10,7 +10,7 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-$busca_seguidores = fn($body) => {
+ function busca_seguidores($body){
     $conexao = conecta_bd();
 
     $id = validar_number($body->id);
@@ -36,7 +36,7 @@ $busca_seguidores = fn($body) => {
     resposta(200, true, $seguidores);
     }
 }
-
+busca_seguidores($body);
 
 
 ?>

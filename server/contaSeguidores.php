@@ -33,8 +33,8 @@ function salva($conexao, $id) {
 }
 
 function alterar(){
-    userSegui();
+    $conexao = conecta_bd();
+    userSegui($conexao);
 }
-
 alterar();
 ?>

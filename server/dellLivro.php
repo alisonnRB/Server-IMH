@@ -6,9 +6,11 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 
-function verifica($body){
+ function verifica ($body){
     $conexao = conecta_bd();
-
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
     $consulta = $conexao->prepare('SELECT nome FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->idLivro]);
     $consulta = $consulta->fetchColumn();
@@ -35,7 +37,7 @@ function verifica($body){
     resposta(200, true);
     }
 }
-
+}
 
 $body = file_get_contents('php://input');
 $body = json_decode($body);

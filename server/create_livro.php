@@ -2,6 +2,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./valicações/validacoes.php";
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: *');
@@ -10,7 +11,7 @@ header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
 
-function oqueAlterar(){
+ function oqueAlterar(){
     $nome = false;
     $foto =  false;
     $selecao = false;
@@ -165,5 +166,4 @@ function salvaFim($conexao, $consulta){
     $stm->execute();
 }
 oqueAlterar();
-
 ?>
