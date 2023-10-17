@@ -1,6 +1,8 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./valicações/validacoes.php";
+
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: http://localhost:3000');

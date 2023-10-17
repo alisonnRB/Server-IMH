@@ -1,15 +1,24 @@
 <?php
-include "./conexão/conexao.php";
-include "./resposta/resposta.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 
 //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
+function resposta($codigo, $ok, $userInfo) {
+    http_response_code($codigo);
 
+    $response = [
+        'ok' => $ok,
+        'userInfo' => $userInfo,
+    ];
 
-$conexao = conecta_bd();
+    echo(json_encode($response));
+    die;
+}
+
+$conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
 
 $body = file_get_contents('php://input');
 $body = json_decode($body);
@@ -17,7 +26,7 @@ $body = json_decode($body);
 
 //TODO função que constroi a lista que armazena as informaçoes do usuario
 function objectInfo($id) {
-    $conexao = conecta_bd();
+    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
     
     $nome = $conexao->prepare("SELECT nome FROM usuarios WHERE id = :id");
     $nome->execute([':id' => $id]);
@@ -36,6 +45,7 @@ function objectInfo($id) {
     $seguidores = $seguidores->fetchColumn();
 
     return [
+        'id' => $id, 
         'nome' => $nome,
         'fotoPerfil' => $fotoPerfil,
         'genero' => $genero,
