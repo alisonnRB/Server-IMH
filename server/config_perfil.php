@@ -2,15 +2,17 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./valicações/validacoes.php";
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
 
-function oqueAlterar(){
+$oqueAlterar = fn ()=>{
     $nome = false;
     $foto =  false;
+
 
     //TODO verifica se o id veio
     if (isset($_POST['id']) || !empty($_POST['id'])){
@@ -130,6 +132,5 @@ function salvaNome($conexao){
     $stmt->execute([$_POST['nome'], $_POST['id']]);
 }
 
-oqueAlterar();
 
 ?>

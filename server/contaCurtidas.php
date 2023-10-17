@@ -4,8 +4,7 @@ header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function Livroslike() {
-    $conexao = new PDO("mysql:host=localhost;dbname=ihm", "root", "");
+function Livroslike($conexao) {
     $consulta = $conexao->prepare("SELECT id FROM livro_publi");
     $consulta->execute();
     $livros = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -15,8 +14,7 @@ function Livroslike() {
     }
 }
 
-function comentariolike() {
-    $conexao = conecta_bd();
+function comentariolike($conexao) {
     $consulta = $conexao->prepare("SELECT id FROM comentarios");
     $consulta->execute();
     $coment = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -48,10 +46,13 @@ function salva($conexao, $tabela, $id) {
     $stmt->execute();
 }
 
-function alterar(){
-    Livroslike();
-    comentariolike();
+$alterar = fn ()=>{
+    $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
+    Livroslike($conexao);
+    comentariolike($conexao);
+    }
 }
-
-alterar();
 ?>
