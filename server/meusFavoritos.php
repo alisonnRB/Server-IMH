@@ -40,11 +40,11 @@ function quaisLivros($body){
                     $numeroChave++;
                 }
             }
-            resposta(200, true, "deu certo", $livrosObj);
+            resposta(200, true, $livrosObj);
             }
     }
     }catch (Exception $e) {
-        resposta(500, false, null, null);
+        resposta(500, false, null);
     }
 }
 

@@ -3,6 +3,7 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./valicações/validacoes.php";
+
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
@@ -53,7 +54,7 @@ function comentar($body){
     }
 
 
-    resposta(200, true);
+    resposta(200, true, "certo");
     }
 }
 

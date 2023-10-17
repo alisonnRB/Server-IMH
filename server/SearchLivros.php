@@ -68,9 +68,9 @@ function quaisLivros($search, $params){
         $stmt->execute($params);
         $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        resposta(200, true, "deu certo", $livros);
+        resposta(200, true, $livros);
     }} catch (Exception $e) {
-        resposta(500, false, null, null);
+        resposta(500, false, null);
     }
 }
 

@@ -11,15 +11,15 @@ header('Access-Control-Allow-Headers: *');
 function verifica($body, $token){
     //? verifica se estão vazios
     if (empty($body->email) && empty($body->senha)){
-        resposta(200, false, "Você deve preencher os campos", 'x', $token);
+        resposta(200, false, "Você deve preencher os campos");
     }
 
     if (empty($body->email)){
-        resposta(200, false, "Preencha o campo do e-mail", 'x', $token);
+        resposta(200, false, "Preencha o campo do e-mail");
     }
 
     if (empty($body->senha)){
-        resposta(200, false, "Preencha o campo da senha", 'x', $token);
+        resposta(200, false, "Preencha o campo da senha");
     }
 
     consulta($body, $token);
@@ -50,12 +50,12 @@ function consulta($body, $token){
 
             $token = geraToken();
 
-            resposta(200, true, "login bem sucedido", $id, $token);
+            resposta(200, true, "login bem sucedido");
         }else{
-            resposta(400, false, "Senha incorreta", 'x', $token);
+            resposta(400, false, "Senha incorreta");
         }
     }else{
-        resposta(400, false, "Email não registrado!", 'x', $token);
+        resposta(400, false, "Email não registrado!");
     }
 }
 //!

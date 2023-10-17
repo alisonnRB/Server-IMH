@@ -34,7 +34,7 @@ header('Access-Control-Allow-Headers: *');
     $stmt = $conexao->prepare('DELETE FROM livro_publi WHERE id = :id');
     $stmt->execute([':id' => $body->idLivro]);
 
-    resposta(200, true);
+    resposta(200, true, "certo");
     }
 }
 }

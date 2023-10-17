@@ -1,24 +1,13 @@
 <?php
 include "./conexão/conexao.php";
+include "./resposta/resposta.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 
 //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
-function resposta($codigo, $ok, $userInfo) {
-    http_response_code($codigo);
 
-    $response = [
-        'ok' => $ok,
-        'userInfo' => $userInfo,
-    ];
-
-    echo(json_encode($response));
-    die;
-}
-
-$conexao = conecta_bd();
 
 $body = file_get_contents('php://input');
 $body = json_decode($body);

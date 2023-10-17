@@ -25,11 +25,11 @@ function quaisLivros($body){
         $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-        resposta(200, true, "deu certo", $stmt);
+        resposta(200, true, $stmt);
 
         }
     }}catch (Exception $e) {
-        resposta(500, false, null, null);
+        resposta(500, false, null);
     }
 }
 

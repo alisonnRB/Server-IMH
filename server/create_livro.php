@@ -39,6 +39,9 @@ function controla($nome, $foto, $selecao){
  
     //? cria a conexão
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
     $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
     $stm->bindParam(':user_id', $_POST['id']);
@@ -48,7 +51,8 @@ function controla($nome, $foto, $selecao){
     $consulta->execute([':user_id' => $_POST['id']]);
     $consulta = $consulta->fetchColumn();
     
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/';
+    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
+    }
     
 
     if(!empty($_POST['classificacao'])){

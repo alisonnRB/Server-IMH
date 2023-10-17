@@ -19,7 +19,7 @@ function qualSave($body) {
         $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
         if($linha['user_id'] != $body->idUser){
-            resposta(500, false);
+            resposta(500, false, "não é seu livro");
         }else{
         SaveSinopse($body, $conexao);}
     }
@@ -36,7 +36,7 @@ function PrepareCap($body, $conexao){
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if($linha['user_id'] != $body->idUser){
-        resposta(500, false);
+        resposta(500, false, "não é seu livro");
     }else{
         if ($linha) {
         $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
@@ -62,10 +62,10 @@ function PrepareCap($body, $conexao){
 
         file_put_contents($nomeArquivo, $body->text); // Criar ou atualizar o arquivo
 
-        resposta(200, true);
-    } else {
-        resposta(404, false);
-    }
+        resposta(200, true, 'certo');
+        } else {
+        resposta(404, false, 'não foi encontrado');
+        }
     } 
 }
 

@@ -31,7 +31,7 @@ function verifica($body){
         if (!empty($texto)) {
             Renomeando($caminhoPasta, $texto, $body);
         }
-        resposta(200, true);
+        resposta(200, true, "certo");
     }
 }
 }
