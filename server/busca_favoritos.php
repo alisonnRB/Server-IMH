@@ -12,6 +12,8 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+busca_favoritos($body);
+
 function busca_favoritos($body){
 
     $conexao = conecta_bd();
@@ -38,5 +40,5 @@ function busca_favoritos($body){
     resposta(200, true, $favoritos);
     }
 }
-busca_favoritos($body);
+
 ?>
