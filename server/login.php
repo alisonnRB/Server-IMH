@@ -1,6 +1,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./token/geraToken.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -9,7 +10,7 @@ header('Access-Control-Allow-Headers: *');
 //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
 
 
-function verifica($body, $token){
+function verifica($body){
     //? verifica se estão vazios
     if (empty($body->email) && empty($body->senha)){
         resposta(200, false, "Você deve preencher os campos");
@@ -23,10 +24,10 @@ function verifica($body, $token){
         resposta(200, false, "Preencha o campo da senha");
     }
 
-    consulta($body, $token);
+    consulta($body);
 }
 
-function consulta($body, $token){
+function consulta($body){
 
 
     $conexao = conecta_bd();
@@ -37,24 +38,17 @@ function consulta($body, $token){
 
     if ($consulta->rowCount() === 1) {
 
-        //? guarda as informaçoes da consulta como lista
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
         //? verifica se senha e email coicidem
         if ($body->senha === $usuario['senha']) {
-            $idUser = $conexao->prepare("SELECT id FROM usuarios WHERE email = :email");
+            $idUser = $conexao->prepare("SELECT id, email FROM usuarios WHERE email = :email");
             $idUser->execute([':email' => $body->email]);
-        
-            $id = $idUser->fetchColumn();
+            $info = $idUser->fetch(PDO::FETCH_ASSOC);
 
-            $token = geraToken();
+            $token = geraToken($info['id'], $info['email']);
 
-            $list = [
-                'authorization' => $token,
-                'id' => $id,
-            ];
-
-            resposta(200, true, $list);
+            resposta(200, true, $token);
         }else{
             resposta(400, false, "Senha incorreta");
         }
@@ -62,15 +56,10 @@ function consulta($body, $token){
         resposta(400, false, "Email não registrado!");
     }
 }
-//!
-function geraToken(){
-    //! CRIAR SISTEMA DE TOKEN
-    return 'logado';
-}
+
 
 $body = file_get_contents('php://input');
-$token = 'deslogado';
 $body = json_decode($body);
 
-verifica($body, $token);
+verifica($body);
 ?>
