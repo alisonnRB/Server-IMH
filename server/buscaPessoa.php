@@ -21,17 +21,15 @@ Busca_usuarios($body);
 function Busca_usuarios ($body){
     $conexao = conecta_bd();
 
-    $nome = validar_string($body->nome, "");
-
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
     } else {
         $search = '';
         $params = array();
 
-        if ($nome[0] != '') {
+        if ($body->nome != '') {
             $search .= 'nome LIKE :nome';
-            $params[':nome'] = '%' . $nome[0] . '%';
+            $params[':nome'] = '%' . $body->nome . '%';
         }else{
             $search .= '1';
         }
