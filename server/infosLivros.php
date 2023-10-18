@@ -1,6 +1,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');

@@ -74,14 +74,14 @@ function SaveSinopse($body, $conexao){
     $stmt = $conexao->prepare("UPDATE livro_publi SET sinopse = ? WHERE id = ?");
     $stmt = $stmt->execute([$body->text, $body->id]);
 
-    resposta(200, true);
+    resposta(200, true, 'certo');
 }
 
 $body = file_get_contents('php://input');
 
 $body = json_decode($body);
     if(!isset($body->id) || empty($body->id)){
-        resposta(200, false);
+        resposta(200, false, 'ops');
     }
 qualSave($body);
 ?>

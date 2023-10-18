@@ -67,8 +67,8 @@ function controla($nome, $foto, $selecao){
     }  
 
     if($foto == true){
-        $Img = validar_img($_FILES['image']);
-        if(!$Img[0]){
+        $Img = validar_img($_FILES);
+        if($Img[0]){
             $okFoto = true;
         }else{
             resposta(400, false, $Img[1]);
@@ -115,10 +115,6 @@ function salvaNome($conexao, $consulta){
 }
 
 function salvaClasse($conexao, $consulta){
-    $classe = verificar_string($_POST['classificacao']);
-    if(!$classe[0]){
-        return;
-    }
     $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
     $stm->bindParam(':classificacao', $classe);
     $stm->bindParam(':id', $consulta);
