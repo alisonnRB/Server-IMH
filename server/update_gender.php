@@ -1,10 +1,16 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
+$body = file_get_contents('php://input');
+$body = json_decode($body);
+
+salva($body->id, $body->selecionados);
 
 //! verificar se o id é valido.
 function salva($id, $selecao){
@@ -33,8 +39,5 @@ function salva($id, $selecao){
     }
 }
 
-$body = file_get_contents('php://input');
-$body = json_decode($body);
 
-salva($body->id, $body->selecionados);
 ?>

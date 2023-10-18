@@ -3,7 +3,7 @@ date_default_timezone_set('America/Sao_Paulo');
 
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
-include "./valicações/validacoes.php";
+include "./validações/validacoes.php";
 
 
 header('Access-Control-Allow-Origin: http://localhost:3000');
@@ -17,32 +17,6 @@ comentar($body);
 
 function comentar($body){
     $conexao = conecta_bd();
-    
-    $id = validar_number($body->id_user);
-    $tipo = validar_string($body->tipo);
-    $id_ref = validar_number($body->id_ref);
-    $texto = validar_string($body->texto);
-    $id_resposta = validar_number($body->idResposta);
-    $conversa = validar_number($body->conversa);
-
-    if (!$id[0]) {
-        resposta(400, false, $id[1]);
-    }
-    if (!$tipo[0]) {
-        resposta(400, false, $tipo[1]);
-    }
-    if (!$idref[0]) {
-        resposta(400, false, $idref[1]);
-    }
-    if (!$texto[0]) {
-        resposta(400, false, $texto[1]);
-    }
-    if (!$idResposta[0]) {
-        resposta(400, false, $idResposta[1]);
-    }
-    if (!$conversa[0]) {
-        resposta(400, false, $conversa[1]);
-    }
 
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
@@ -53,14 +27,14 @@ function comentar($body){
         
     
         $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa ) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
-        $stm->bindParam(':user', $id_user);
-        $stm->bindParam(':tipo', $tipo);
-        $stm->bindParam(':id_ref', $id_ref);
-        $stm->bindParam(':texto', $texto);
+        $stm->bindParam(':user', $body->id_user);
+        $stm->bindParam(':tipo', $body->tipo);
+        $stm->bindParam(':id_ref', $body->id_ref);
+        $stm->bindParam(':texto', $body->texto);
         $stm->bindParam(':resposta', $resposta);
-        $stm->bindParam(':id_resposta', $idResposta);
+        $stm->bindParam(':id_resposta', $body->idResposta);
         $stm->bindParam(':tempo', $data);
-        $stm->bindParam(':conversa', $conversa);
+        $stm->bindParam(':conversa', $body->conversa);
     
         $stm->execute();
     

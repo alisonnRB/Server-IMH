@@ -2,7 +2,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
-include "./valicações/validacoes.php";
+include "./validações/validacoes.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
@@ -14,6 +14,8 @@ oque_alterar();
 function oque_alterar(){
     $nome = false;
     $foto =  false;
+
+    
     //TODO verifica se o id veio
     if (isset($_POST['id']) || !empty($_POST['id'])){
         
@@ -25,7 +27,7 @@ function oque_alterar(){
             $foto = true;
         }
 
-    controla($nome, $foto);  
+        controla($nome, $foto);  
     }else{
         resposta(400, false, "há algo errado, tente movamente mais tarde :(");
     }
@@ -38,7 +40,7 @@ function controla($nome, $foto){
 
     if($nome){
         $Nome = validar_string($_POST['nome'], "nome");
-        if(!$Nome[0]){
+        if($Nome[0]){
             $okNome = true;
         }else{
             resposta(400, false, $Nome[1]);
@@ -46,8 +48,8 @@ function controla($nome, $foto){
     }
 
     if($foto == true){
-        $Img = validar_img($_FILES['image']);
-        if(!$Img[0]){
+        $Img = validar_img($_FILES);
+        if($Img[0]){
             $okFoto = true;
         }else{
             resposta(400, false, $Img[1]);
@@ -59,7 +61,7 @@ function controla($nome, $foto){
     }
 
     $conexao = conecta_bd();
-    if(!$conexao[0]){
+    if(!$conexao){
         resposta(500, false, "algo errado no server");
     }else{
         if($foto == true && $okFoto == true){
@@ -72,7 +74,8 @@ function controla($nome, $foto){
         }
 
     if($nome == true && $okNome == true){
-        salvaNome($conexao, $Nome);
+        
+        salvaNome($conexao, $Nome[0]);
     }
     }
         resposta(200, true, "Dados atualizados com sucesso.");  

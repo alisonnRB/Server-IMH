@@ -5,18 +5,18 @@ function validar_string ($string, $type){
         if ($type == "nome"){
             $string = filter_var($string, FILTER_SANITIZE_STRING);
             if (!preg_match('/^[a-zA-Z0-9\s]*[a-zA-Z0-9\s]+[a-zA-Z0-9\s]*$/', $string)) {
-                return ($string);
-            }else {
                 return [false, "Possui um caracter inválido"];
+            }else {
+                return [true, $string];
             }
         } 
         else if ($type == "email") {
             $string = filter_var($string,FILTER_VALIDATE_EMAIL);
-            return ($string);
+            return [true, $string];
         }
         else{
             $string = filter_var($string, FILTER_SANITIZE_STRING);
-            return ($string);            
+            return [true, $string];            
         }
     }
     else {
@@ -24,25 +24,6 @@ function validar_string ($string, $type){
     }
     
 };
-
-function validar_number($numero){
-    if (isset($numero) && !empty($numero)){
-        if (is_int($numero)){
-            $numero =  filter_var($numero, FILTER_VALIDATE_INT);
-            return ($numero);
-        }
-        else if (is_float($numero)){
-            $numero = filter_var($numero, FILTER_VALIDATE_FLOAT);
-            return ($numero);
-        }
-        else {
-            return [false, "Tipo indefinido"];
-        }
-    }
-    else {
-        return [false, "Não existe"];
-    }
-}
 
 function validar_img($img){
     if (isset($img)){
@@ -64,14 +45,13 @@ function validar_img($img){
         if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
             return [false, "Tipo de arquivo não permitido."];
         }else{
-            return (true);
+            return [true];
         }
     }
     else {
-        return[false, "Imagem não existe"];
+        return [false, "Imagem não existe"];
     }
 }
-    //? arazena o tipo de imagem enviada
     
 
 ?>

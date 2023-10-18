@@ -2,7 +2,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
-include "./valicações/validacoes.php";
+include "./validações/validacoes.php";
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: *');
@@ -43,15 +43,15 @@ function controla($nome, $foto, $selecao){
         resposta(500, false, "Houve um problema ao conectar ao servidor");
     } else {
 
-    $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
-    $stm->bindParam(':user_id', $_POST['id']);
-    $stm->execute();
+        $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
+        $stm->bindParam(':user_id', $_POST['id']);
+        $stm->execute();
 
-    $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
-    $consulta->execute([':user_id' => $_POST['id']]);
-    $consulta = $consulta->fetchColumn();
+        $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
+        $consulta->execute([':user_id' => $_POST['id']]);
+        $consulta = $consulta->fetchColumn();
     
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
+        $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
     }
     
 
@@ -61,7 +61,6 @@ function controla($nome, $foto, $selecao){
 
     if($nome == true){
         salvaNome($conexao, $consulta);
-
         if (!is_dir($destino)) {
             mkdir($destino, 0777, true);
         }

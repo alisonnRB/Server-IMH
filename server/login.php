@@ -1,6 +1,7 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
@@ -27,8 +28,6 @@ function verifica($body, $token){
 
 function consulta($body, $token){
 
-    $body->email = filter_var($body->email, FILTER_VALIDATE_EMAIL);
-    $body->senha = filter_var($body->senha, FILTER_SANITIZE_STRING);
 
     $conexao = conecta_bd();
 
@@ -50,7 +49,12 @@ function consulta($body, $token){
 
             $token = geraToken();
 
-            resposta(200, true, "login bem sucedido");
+            $list = [
+                'authorization' => $token,
+                'id' => $id,
+            ];
+
+            resposta(200, true, $list);
         }else{
             resposta(400, false, "Senha incorreta");
         }
