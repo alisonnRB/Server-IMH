@@ -3,6 +3,7 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./validações/validacoes.php";
+include "./token/decode_token.php";
 
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -10,9 +11,14 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
-// TODO função que encerra as operações e envia uma resposta para a API trabalhar
+$token = decode_token($_POST['id']);
+if($token == "erro"){
+    resposta(401, true, "não autorizado");
+}else{
+    oqueAlterar($token->id);
+}
 
-function oqueAlterar(){
+function oqueAlterar($id){
     $nome = false;
     $foto =  false;
     $selecao = false;
@@ -30,9 +36,9 @@ function oqueAlterar(){
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
-        controla($nome, $foto, $selecao);  
+        controla($nome, $foto, $selecao, $id);  
 }
-function controla($nome, $foto, $selecao){
+function controla($nome, $foto, $selecao, $id){
     $okFoto = false;
     if($foto == true){
         if(verificaFoto()){
@@ -57,12 +63,12 @@ function controla($nome, $foto, $selecao){
 
         $arquivoTemporario = $_FILES['image']['tmp_name'];
 
-        $nomeUnico = $_POST['id'] . '_' . time() . '.' . $extensao;
+        $nomeUnico = $id . '_' . time() . '.' . $extensao;
 
-        salvaFoto($conexao, $nomeUnico);
+        salvaFoto($conexao, $nomeUnico, $id);
     }
     if($nome == true){
-        salvaNome($conexao);
+        salvaNome($conexao, $id);
     }
     if($selecao == true){
         salvaGen($conexao);
@@ -74,7 +80,7 @@ function controla($nome, $foto, $selecao){
     salvaPubliFin($conexao);
 
     resposta(200, true, "Dados atualizados com sucesso.");
-}
+    }
 }
 function verificaFoto(){
     //? arazena o tipo de imagem enviada
@@ -101,8 +107,8 @@ function verificaFoto(){
         return true;
     }
 }
-function salvaFoto($conexao, $nomeUnico){ 
-    $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $_POST['idLivro'] . '/';
+function salvaFoto($conexao, $nomeUnico, $id){ 
+    $destino = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $_POST['idLivro'] . '/';
 
     if (!is_dir($destino)) {
         mkdir($destino, 0777, true);
@@ -129,13 +135,13 @@ function salvaFoto($conexao, $nomeUnico){
         resposta(500, false, "Algo deu errado com o arquivo.");
     }
 }
-function salvaNome($conexao){
+function salvaNome($conexao, $id){
     $consulta = $conexao->prepare('SELECT nome FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $_POST['idLivro']]);
     $consulta = $consulta->fetchColumn();
 
-    $caminhoAntigo = '../livros/' . $_POST['id'] . "/" . $consulta . '_' . $_POST['idLivro'];
-    $caminhoNovo = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $_POST['idLivro'];
+    $caminhoAntigo = '../livros/' . $id . "/" . $consulta . '_' . $_POST['idLivro'];
+    $caminhoNovo = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $_POST['idLivro'];
 
     if (rename($caminhoAntigo, $caminhoNovo)) {
         $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
@@ -196,8 +202,5 @@ function salvaTags($conexao){
     $stm->bindParam(':id', $_POST['idLivro']);
     $stm->execute();
 }
-
-
-oqueAlterar();
 
 ?>

@@ -3,21 +3,28 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./validações/validacoes.php";
+include "./token/decode_token.php";
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
-oqueAlterar();
 
-function oqueAlterar(){
+$token = decode_token($_POST['id']);
+if($token == "erro"){
+    resposta(401, true, "não autorizado");
+}else{
+    oqueAlterar($token->id);
+}
+
+function oqueAlterar($id){
     $nome = false;
     $foto =  false;
     $selecao = false;
 
     //TODO verifica se o id veio
-    if (isset($_POST['id']) || !empty($_POST['id'])){
+    if (isset($id) || !empty($id)){
         
         //TODO verfica se há nome para alterar
         if(isset($_POST['nome']) && !empty($_POST['nome'])){
@@ -29,12 +36,12 @@ function oqueAlterar(){
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
-        controla($nome, $foto, $selecao);  
+        controla($nome, $foto, $selecao, $id);  
     }else{
         resposta(400, false, "há algo errado, tente movamente mais tarde :(");
     }
 }
-function controla($nome, $foto, $selecao){
+function controla($nome, $foto, $selecao, $id){
     $okFoto = false;
  
     //? cria a conexão
@@ -44,14 +51,14 @@ function controla($nome, $foto, $selecao){
     } else {
 
         $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
-        $stm->bindParam(':user_id', $_POST['id']);
+        $stm->bindParam(':user_id', $id);
         $stm->execute();
 
         $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
-        $consulta->execute([':user_id' => $_POST['id']]);
+        $consulta->execute([':user_id' => $id]);
         $consulta = $consulta->fetchColumn();
     
-        $destino = '../livros/' . $_POST['id'] . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
+        $destino = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
     }
     
 
@@ -81,7 +88,7 @@ function controla($nome, $foto, $selecao){
 
         $arquivoTemporario = $_FILES['image']['tmp_name'];
 
-        $nomeUnico = $_POST['id'] . '_' . time() . '.' . $extensao;
+        $nomeUnico = $id . '_' . time() . '.' . $extensao;
 
         salvaFoto($conexao, $nomeUnico, $consulta, $destino);
     }

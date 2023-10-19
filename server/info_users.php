@@ -1,6 +1,8 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./token/decode_token.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
@@ -8,16 +10,25 @@ header('Access-Control-Allow-Headers: *');
 
 //TODO função que encerra as operações e enciar umas resposta para a api trabalhar
 
-
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+$token = decode_token($body->id);
+if($token == "erro"){
+    resposta(401, true, "não autorizado");
+}else{
+    if($body->idUser == "i"){
+        resposta(200, true, objectInfo($token->id));    
+    }else{
+        resposta(200, true, objectInfo($body->idUser));    
+    }
+}
 
 //TODO função que constroi a lista que armazena as informaçoes do usuario
 function objectInfo($id) {
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
     $nome = $conexao->prepare("SELECT nome FROM usuarios WHERE id = :id");
     $nome->execute([':id' => $id]);
@@ -45,10 +56,4 @@ function objectInfo($id) {
     }
 }
 
-//TODO tenta responder
-try {
-    resposta(200, true, objectInfo($body->id));
-} catch (Exception $e) {
-    resposta(500, false, null);
-}
 ?>

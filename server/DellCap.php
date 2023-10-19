@@ -2,12 +2,24 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./validações/validacoes.php";
+include "./token/decode_token.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
+$body = file_get_contents('php://input');
+$body = json_decode($body);
 
-function verifica($body){
+$token = decode_token($body->idUser);
+if($token == "erro"){
+    resposta(401, true, "não autorizado");
+}else{
+    verifica($token->id,$body);
+}
+
+
+function verifica($idUser, $body){
     $conexao = conecta_bd();
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
@@ -17,8 +29,8 @@ function verifica($body){
 
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
-    $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
-    $nomeArquivo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $body->cap . '.html';
+    $caminhoPasta = '../livros/' . $idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
+    $nomeArquivo = $caminhoPasta . $body->id . '_' . $idUser . '_' . $body->cap . '.html';
 
     $texto= json_decode($linha['texto'], true);
     $public= json_decode($linha['pronto'], true);
@@ -29,7 +41,7 @@ function verifica($body){
     }
     if (reorderList($texto, $public, $body, $conexao)) {
         if (!empty($texto)) {
-            Renomeando($caminhoPasta, $texto, $body);
+            Renomeando($caminhoPasta, $texto, $body, $idUser);
         }
         resposta(200, true, "certo");
     }
@@ -66,20 +78,17 @@ function reorderList($texto, $public, $body, $conexao) {
     return true;
 }
 
-function Renomeando($caminhoPasta, $texto, $body){
+function Renomeando($caminhoPasta, $texto, $body, $idUser){
     $keys = count($texto);
     $contador = 0;
     for ($i = 0; $i <= $keys; $i++) {
-        $nomeArquivoAntigo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $i . '.html';
+        $nomeArquivoAntigo = $caminhoPasta . $body->id . '_' . $idUser . '_' . $i . '.html';
         if (file_exists($nomeArquivoAntigo)) {
             $contador++;        
-            $novoNomeArquivo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $contador . '.html';
+            $novoNomeArquivo = $caminhoPasta . $body->id . '_' . $idUser . '_' . $contador . '.html';
             rename($nomeArquivoAntigo, $novoNomeArquivo);
         }
     }
 }
 
-$body = file_get_contents('php://input');
-$body = json_decode($body);
-    verifica($body);
 ?>

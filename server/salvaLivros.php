@@ -1,13 +1,28 @@
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
+include "./token/decode_token.php";
+
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
 
+$body = file_get_contents('php://input');
+$body = json_decode($body);
+
+$token = decode_token($body->idUser);
+if($token == "erro"){
+    resposta(401, true, "não autorizado");
+}else{
+    qualSave($token->id,$body);
+}
+
+
+
 //! verificar id
-function qualSave($body) {
+function qualSave($user_id, $body) {
     $conexao = conecta_bd();
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
@@ -18,28 +33,28 @@ function qualSave($body) {
 
         $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
-        if($linha['user_id'] != $body->idUser){
-            resposta(500, false, "não é seu livro");
+        if($linha['user_id'] != $user_id){
+            resposta(401, false, "não é seu livro");
         }else{
-        SaveSinopse($body, $conexao);}
+        SaveSinopse($body, $conexao, $user_id);}
     }
     elseif ($body->cap >= 1) {
-        PrepareCap($body, $conexao);
+        PrepareCap($body, $conexao, $user_id);
     }
 }
 }
-function PrepareCap($body, $conexao){
+function PrepareCap($body, $conexao, $user_id){
 
     $consulta = $conexao->prepare('SELECT user_id, texto, nome FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);
 
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
-    if($linha['user_id'] != $body->idUser){
-        resposta(500, false, "não é seu livro");
+    if($linha['user_id'] != $user_id){
+        resposta(401, false, "não é seu livro");
     }else{
         if ($linha) {
-        $caminhoPasta = '../livros/' . $body->idUser . '/' . $linha['nome'] . '_' . $body->id . '/';
+        $caminhoPasta = '../livros/' . $user_id . '/' . $linha['nome'] . '_' . $body->id . '/';
 
         $titulo = json_decode($linha['texto'], true); // Decodificar JSON existente para array associativo
 
@@ -53,7 +68,7 @@ function PrepareCap($body, $conexao){
         $stmt = $conexao->prepare("UPDATE livro_publi SET texto = ? WHERE id = ?");
         $stmt->execute([$tituloJSON, $body->id]);
 
-        $nomeArquivo = $caminhoPasta . $body->id . '_' . $body->idUser . '_' . $body->cap . '.html';
+        $nomeArquivo = $caminhoPasta . $body->id . '_' . $user_id . '_' . $body->cap . '.html';
 
         // Verificar se o arquivo já existe antes de criar ou atualizar
         if (file_exists($nomeArquivo)) {
@@ -70,18 +85,11 @@ function PrepareCap($body, $conexao){
 }
 
 
-function SaveSinopse($body, $conexao){
+function SaveSinopse($body, $conexao, $user_id){
     $stmt = $conexao->prepare("UPDATE livro_publi SET sinopse = ? WHERE id = ?");
     $stmt = $stmt->execute([$body->text, $body->id]);
 
     resposta(200, true, 'certo');
 }
 
-$body = file_get_contents('php://input');
-
-$body = json_decode($body);
-    if(!isset($body->id) || empty($body->id)){
-        resposta(200, false, 'ops');
-    }
-qualSave($body);
 ?>
