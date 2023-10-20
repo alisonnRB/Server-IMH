@@ -19,6 +19,7 @@ Busca_usuarios($body);
 
 
 function Busca_usuarios ($body){
+    //! Verificar entrada string, filtrar e etc
     $conexao = conecta_bd();
 
     if (!$conexao) {

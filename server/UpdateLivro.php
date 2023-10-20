@@ -18,6 +18,7 @@ if($token == "erro"){
     oqueAlterar($token->id);
 }
 
+//! Verificar entrada string, filtrar e etc. assim como fazer apenas a variavel jafiltrada passar pelas funções
 function oqueAlterar($id){
     $nome = false;
     $foto =  false;

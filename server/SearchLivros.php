@@ -13,6 +13,8 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+//! Verificar as entradas string, filtrar e etc
+
 function criaPesquisa($body) {
     $search = 'publico = 1';
     $params = array(); // Para armazenar os parâmetros seguros

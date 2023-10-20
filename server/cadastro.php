@@ -16,6 +16,7 @@ $body = json_decode($body);
 verificacao_de_dados($body);
 
 function verificacao_de_dados($body){ 
+    //! Verificar as entradas string, filtrar e etc
     if (empty($body->nome) && empty($body->email) && empty($body->senha)){
         resposta(200, false, "Você deve preencher os campos");
     }

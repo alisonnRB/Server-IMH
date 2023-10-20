@@ -21,7 +21,7 @@ if($token == "erro"){
 
 
 
-//! verificar id
+//! Verificar as entradas string, filtrar e etc
 function qualSave($user_id, $body) {
     $conexao = conecta_bd();
     if (!$conexao) {

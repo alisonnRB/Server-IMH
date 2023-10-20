@@ -21,6 +21,7 @@ if($token == "erro"){
 
 
 function oque_alterar($id){
+    //! Verificar as entradas string, filtrar e etc
     $nome = false;
     $foto =  false;
 

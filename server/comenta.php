@@ -22,6 +22,7 @@ if($token == "erro"){
 }
 
 function comentar($id_user, $body){
+    //! Verificar entrada string, filtrar e etc
     $conexao = conecta_bd();
 
     if (!$conexao) {
