@@ -8,7 +8,7 @@
     function geraToken($id, $email){
 
         $payload = array(
-            "exp" => time() + 3600,
+            "exp" => time() + 86400,
             "iat" => time(), // 
             "email" => $email,
             "id" => $id,

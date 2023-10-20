@@ -14,7 +14,7 @@ $body = json_decode($body);
 
 $token = decode_token($body->id_user);
 if($token == "erro"){
-    resposta(401, true, "não autorizado");
+    resposta(401, false, "não autorizado");
 }else{
     curtir($token->id, $body);
 }

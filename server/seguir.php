@@ -12,7 +12,7 @@ $body = json_decode($body);
 
 $token = decode_token($body->id_user);
 if($token == "erro"){
-    resposta(401, true, "não autorizado");
+    resposta(401, false, "não autorizado");
 }else{
     seguir($token->id, $body->id_ref);
 }

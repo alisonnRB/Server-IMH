@@ -13,7 +13,7 @@ header('Access-Control-Allow-Headers: *');
 
 $token = decode_token($_POST['id']);
 if($token == "erro"){
-    resposta(401, true, "não autorizado");
+    resposta(401, false, "não autorizado");
 }else{
     oqueAlterar($token->id);
 }

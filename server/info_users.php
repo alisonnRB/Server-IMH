@@ -15,7 +15,7 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 if($token == "erro"){
-    resposta(401, true, "não autorizado");
+    resposta(401, false, "não autorizado");
 }else{
     if($body->idUser == "i"){
         resposta(200, true, objectInfo($token->id));    

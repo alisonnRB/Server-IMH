@@ -20,6 +20,12 @@
     try{
         $decoded = JWT::decode($token, new Key($_SERVER['KEY'], 'HS256'));
         resposta(200, true, "autenticado"); 
+    }catch (ExpiredException $e) {
+        resposta(401, false, 'Token expirado');
+    }catch (BeforeValidException $e) {
+        resposta(401, false, 'Token ainda não é válido');
+    }catch (SignatureInvalidException $e) {
+        resposta(401, false, 'Token inválido - Assinatura inválida');
     }catch(Throwable $e){
         if($e->getMessage() == 'Expired token'){
             resposta(401, false, 'token Expirado');     
