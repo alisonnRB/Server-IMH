@@ -11,7 +11,13 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-salva_cap_pronto($body);
+$token = decode_token($body->id);
+if($token == "erro"){
+    resposta(401, false, "não autorizado");
+}else{
+    salva_cap_pronto($body);
+}
+
 
 function salva_cap_pronto ($body){
     $conexao = conecta_bd(); 
