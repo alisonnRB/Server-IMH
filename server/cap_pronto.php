@@ -3,6 +3,7 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./validações/validacoes.php";
+include "./token/decode_token.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -18,7 +19,6 @@ if($token == "erro"){
     salva_cap_pronto($token->id, $body);
 }
 
-
 function salva_cap_pronto ($id, $body){
     $conexao = conecta_bd(); 
 
@@ -29,7 +29,7 @@ function salva_cap_pronto ($id, $body){
         $consulta->execute([':id' => $body->idLivro]);
         $linha = $consulta->fetch(PDO::FETCH_ASSOC);
         if($linha['user_id'] != $id){
-            resposta(500, false, "você não pode alterar livros que não são seus");
+            resposta(401, false, "você não pode alterar livros que não são seus");
         }else{
             $public = json_decode($linha['pronto'], true);
 
@@ -40,7 +40,7 @@ function salva_cap_pronto ($id, $body){
             $stmt = $conexao->prepare("UPDATE livro_publi SET pronto = ? WHERE id = ?");
             $stmt->execute([$publicJSON, $body->idLivro]);
 
-            resposta(200, true);
+            resposta(200, true, "certo");
         }
     }
 }
