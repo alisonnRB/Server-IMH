@@ -18,18 +18,20 @@ if($token == "erro"){
 }else{
     qual($token->id, $body);   
 }
-//! verificar id
+
 function qual($id, $body){
     $conexao = conecta_bd();
-    //! VERFICAR
+    //! VERFICAR conexão
     if(!empty($body->texto)){
-        //! VERIFICAR
+        //! VERIFICAR  string
         saveText($id,$body, $conexao);
     }
 }
 
 
 function saveText($id, $body, $conexao) {
+    //! verificar da existencia de enquete valida
+    //! verificar da existencia link livro valido
     $id_enquete = 0;
 
     $stmt = $conexao->prepare('INSERT INTO feed_publi(user_id, texto, ref_livro, enquete) VALUES (:user_id, :texto, :ref_livro, :enquete)');
@@ -57,6 +59,7 @@ function saveText($id, $body, $conexao) {
 }
 
 function salva_enquete($id, $body, $conexao){
+    //! verficar itens da enquete
     $enquete = json_encode($body->enquete);
     $stm = $conexao->prepare('INSERT INTO enquete(titulo, quest) VALUES (:titulo, :quest)');
     $stm->bindParam(':titulo', $body->titleEnquete);
