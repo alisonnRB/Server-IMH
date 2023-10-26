@@ -8,6 +8,8 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
+date_default_timezone_set('America/Sao_Paulo');
+
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
@@ -34,7 +36,7 @@ function saveText($id, $body, $conexao) {
     //! verificar da existencia link livro valido
     $id_enquete = 0;
 
-    $stmt = $conexao->prepare('INSERT INTO feed_publi(user_id, texto, ref_livro, enquete) VALUES (:user_id, :texto, :ref_livro, :enquete)');
+    $stmt = $conexao->prepare('INSERT INTO feed_publi(user_id, texto, ref_livro, enquete, tempo) VALUES (:user_id, :texto, :ref_livro, :enquete, :tempo)');
     $stmt->bindParam(':texto', $body->texto);
     $stmt->bindParam(':user_id', $id);
     if($body->livro != "" && $body->livro->id != 0){
@@ -53,6 +55,8 @@ function saveText($id, $body, $conexao) {
     }
 
     $stmt->bindParam(':enquete', $id_enquete); 
+    $data = date('Y-m-d H:i:s');
+    $stmt->bindParam(':tempo', $data); 
     $stmt->execute();
 
     resposta(200, true, 'certo');
