@@ -1,6 +1,13 @@
 {
+
+    "autoload": {
+        "psr-4":{
+            "Api\\WebSocket\\": "src/"
+        }
+    },
     "require": {
         "firebase/php-jwt": "^6.9",
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "cboden/ratchet": "^0.4.4"
     }
 }
