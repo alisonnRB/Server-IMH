@@ -62,7 +62,7 @@ function Busca_publi($id) {
 
     for($i = 0; $i<$keys; $i++){;
         if($Busca[$i]['enquete'] != 0){
-            $stmt = $conexao->prepare('SELECT quest, titulo FROM enquete WHERE id = :id');
+            $stmt = $conexao->prepare('SELECT id, quest, titulo, votos FROM enquete WHERE id = :id');
             $stmt->bindParam(':id', $Busca[$i]['enquete']);
             $stmt->execute();
             $enquete = $stmt->fetchAll(PDO::FETCH_ASSOC);

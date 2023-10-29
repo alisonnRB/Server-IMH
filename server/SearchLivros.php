@@ -20,9 +20,9 @@ function criaPesquisa($body) {
     $params = array(); // Para armazenar os parâmetros seguros
 
     if (!empty($body->nome) && $body->nome != '') {
-        $search .= ' AND nome LIKE :nome';
-        $params[':nome'] = $body->nome . '%';
-        $search .= ' OR tags LIKE :tags';
+        $search .= ' AND (nome LIKE :nome';
+        $params[':nome'] = '%' . $body->nome . '%';
+        $search .= ' OR tags LIKE :tags)';
         $params[':tags'] = '%' . $body->nome . '%';
     }
 
