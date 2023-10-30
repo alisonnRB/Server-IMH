@@ -7,13 +7,21 @@ use Ratchet\WebSocket\WsServer;
 
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/server/conexão/conexao.php';
 
-$server = IoServer::factory(
-    new HttpServer(
-        new WsServer(
-            new SistemaChat()
-        )
+$conexaoBD = conecta_bd();
+
+// Certifique-se de que $conexaoBD seja uma instância do PDO
+if ($conexaoBD instanceof PDO) {
+    $server = IoServer::factory(
+        new HttpServer(
+            new WsServer(
+                new SistemaChat($conexaoBD)
+            )
         ), 8080
-);
+    );
 
-$server->run();
+    $server->run();
+} else {
+    echo "A conexão PDO não está correta.";
+}
