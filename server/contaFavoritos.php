@@ -1,10 +1,23 @@
 <?php
 include "./conexão/conexao.php";
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST');
 
-function Livroslike($conexão) {
+
+alterar();
+
+function alterar(){
+    $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(500, false, "Houve um problema ao conectar ao servidor");
+    } else {
+        Conta_fav($conexao);
+    }
+}
+
+function Conta_fav($conexao) {
     $consulta = $conexao->prepare("SELECT id FROM livro_publi");
     $consulta->execute();
     $livros = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -31,13 +44,5 @@ function salva($conexao, $id) {
     $stmt->execute();
 }
 
-function alterar(){
-    $conexao = conecta_bd();
-    if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
-    } else {
-    Livroslike($conexão);
-}
-}
-alterar();
+
 ?>
