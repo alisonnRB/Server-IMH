@@ -20,7 +20,7 @@ if($token == "erro"){
 }
 
 function Busca_publi($id) {
-    //! Verificação da conexão
+    // Verificação da conexão
     $conexao = conecta_bd();
 
     $stm = $conexao->prepare('SELECT id_ref FROM seguidores WHERE user_id = :user_id');
@@ -28,50 +28,45 @@ function Busca_publi($id) {
     $stm->execute();
     $segui = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    
+    $resultados_finais = [];
 
-    for($i = 0; $i<count($segui); $i++){;
-        $stmt = $conexao->prepare('SELECT id, user_id, texto, ref_livro, enquete, tempo  FROM feed_publi WHERE user_id = :user_id OR user_id = :id ORDER BY tempo DESC');
-        $stmt->bindParam(':user_id', $segui[$i]['id_ref']);
+    foreach ($segui as $seguidor) {
+        $stmt = $conexao->prepare('SELECT id, user_id, texto, ref_livro, enquete, tempo FROM feed_publi WHERE user_id = :user_id OR user_id = :id ORDER BY tempo DESC');
+        $stmt->bindParam(':user_id', $seguidor['id_ref']);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         $Busca = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-    $keys = count($Busca);
-    
-    for($i = 0; $i<$keys; $i++){;
-        $stmt = $conexao->prepare('SELECT id, nome, fotoPerfil FROM usuarios WHERE id = :id');
-        $stmt->bindParam(':id', $Busca[$i]['user_id']);
-        $stmt->execute();
-        $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $Busca[$i]['infos_user'] = $user;
-    }
-
-    for($i = 0; $i<$keys; $i++){;
-        if($Busca[$i]['ref_livro'] != 0){
-            $stmt = $conexao->prepare('SELECT id, imagem, user_id, nome FROM livro_publi WHERE id = :id');
-            $stmt->bindParam(':id', $Busca[$i]['ref_livro']);
+        for ($i = 0; $i < count($Busca); $i++) {
+            $stmt = $conexao->prepare('SELECT id, nome, fotoPerfil FROM usuarios WHERE id = :id');
+            $stmt->bindParam(':id', $Busca[$i]['user_id']);
             $stmt->execute();
-            $livro = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $Busca[$i]['infos_link'] = $livro;
+            $Busca[$i]['infos_user'] = $user;
+
+            if ($Busca[$i]['ref_livro'] != 0) {
+                $stmt = $conexao->prepare('SELECT id, imagem, user_id, nome FROM livro_publi WHERE id = :id');
+                $stmt->bindParam(':id', $Busca[$i]['ref_livro']);
+                $stmt->execute();
+                $livro = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $Busca[$i]['infos_link'] = $livro;
+            }
+
+            if ($Busca[$i]['enquete'] != 0) {
+                $stmt = $conexao->prepare('SELECT id, quest, titulo, votos FROM enquete WHERE id = :id');
+                $stmt->bindParam(':id', $Busca[$i]['enquete']);
+                $stmt->execute();
+                $enquete = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $Busca[$i]['enquete'] = $enquete;
+            }
         }
+
+        // Adicione os resultados da consulta para um seguidor ao array final
+        $resultados_finais = array_merge($resultados_finais, $Busca);
     }
 
-    for($i = 0; $i<$keys; $i++){;
-        if($Busca[$i]['enquete'] != 0){
-            $stmt = $conexao->prepare('SELECT id, quest, titulo, votos FROM enquete WHERE id = :id');
-            $stmt->bindParam(':id', $Busca[$i]['enquete']);
-            $stmt->execute();
-            $enquete = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $Busca[$i]['enquete'] = $enquete;
-        }
-    }
-
-    resposta(200, true, $Busca);
+    resposta(200, true, $resultados_finais);
 }
-
-?>
