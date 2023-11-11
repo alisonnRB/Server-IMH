@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => 'efc3f3a93aced2edaefb77442b9f24af759f4ec4',
+        'pretty_version' => 'dev-server',
+        'version' => 'dev-server',
+        'reference' => '81e2bacf8dd69d2cb2561b18e5f3611bd26493dc',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => 'efc3f3a93aced2edaefb77442b9f24af759f4ec4',
+            'pretty_version' => 'dev-server',
+            'version' => 'dev-server',
+            'reference' => '81e2bacf8dd69d2cb2561b18e5f3611bd26493dc',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -185,9 +185,9 @@
             'dev_requirement' => false,
         ),
         'symfony/http-foundation' => array(
-            'pretty_version' => 'v6.3.7',
-            'version' => '6.3.7.0',
-            'reference' => '59d1837d5d992d16c2628cd0d6b76acf8d69b33e',
+            'pretty_version' => 'v6.3.8',
+            'version' => '6.3.8.0',
+            'reference' => 'ce332676de1912c4389222987193c3ef38033df6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-foundation',
             'aliases' => array(),
