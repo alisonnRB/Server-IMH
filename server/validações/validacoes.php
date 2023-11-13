@@ -1,30 +1,59 @@
 <?php
-
-function validar_string ($string, $type){
-    if (isset($string) && !empty($string)){
-        if ($type == "nome"){
-            $string = filter_var($string, FILTER_SANITIZE_STRING);
-            if (!preg_match('/^[a-zA-Z0-9\s]*[a-zA-Z0-9\s]+[a-zA-Z0-9\s]*$/', $string)) {
-                return [false, "Possui um caracter inválido"];
-            }else {
-                return [true, $string];
-            }
-        } 
-        else if ($type == "email") {
-            $string = filter_var($string,FILTER_VALIDATE_EMAIL);
+//função validando nome
+function validar_nome ($string){
+    if (isset($string) && !empty($string) && filter_var($string, FILTER_SANITIZE_STRING)){
+        if (!preg_match('/^[a-zA-Z0-9\s]+$/', $string)) {
+            return [false, "possui um caracter inválido"];
+        } else {
+            $string = strip_tags($string);
             return [true, $string];
         }
-        else{
-            $string = filter_var($string, FILTER_SANITIZE_STRING);
-            return [true, $string];            
-        }
-    }
-    else {
-        return [false, "String não existe"];
-    }
-    
-};
+    } 
+}
 
+//função validando string
+function validar_string($string){
+    $padrao_string = "/^[a-zA-Z0-9ç!@#$%^&*_+\[\]:;,.?~\\-]+$/u";
+    if (isset($string) && !empty($string) && filter_var($string,FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => $padrao_string)))){
+        $string = strip_tags($string);
+        return [true, $string];
+    } else {
+        return [false, "caracter inválido"];
+    }
+}
+
+//função validando int
+function validar_int($int){
+    if (isset($int) && !empty($int) && filter_var($int,FILTER_VALIDATE_INT)){
+        $int = strip_tags($int);
+        return [true, $int];
+    } else {
+        return [false, "inteiro indisponivel"];
+    }
+}
+
+//função validando email
+function validar_email ($string){
+    if (isset($string) && !empty($string) && filter_var($string,FILTER_VALIDATE_EMAIL)){
+            $string = strip_tags($string);
+            return [true, $string];
+    } else {
+        return [false, "Email inválido"];
+    }
+}
+
+//função validando senha
+function validar_senha ($senha){
+    $padrao_senha = "/^[a-zA-Z0-9ç!@#$%^&*_+\[\]:;,.?~\\-]+$/u";
+    if (isset($senha) && !empty($senha) && filter_var($senha,FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => $padrao_senha)))){
+        $senha = strip_tags($senha);
+        return [true, $senha];
+    } else {
+        return [false, "senha inválida"];
+    }
+}
+
+//função validando imagem
 function validar_img($img){
     if (isset($img)){
         $extensao = pathinfo($img['image']['name'], PATHINFO_EXTENSION);

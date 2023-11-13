@@ -37,8 +37,6 @@ function verificacao_de_dados($body){
     }
 
     $conexao = conecta_bd();
-
-
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
     } else {
@@ -50,7 +48,32 @@ function verificacao_de_dados($body){
         }
     }
 
-    cadastrar($conexao, $body->nome, $body->email, $body->senha);
+    //validação do nome 
+    $nome = validar_nome($body->nome);
+    if ($nome[0] == true){
+        $nome = $nome[1];
+    } else {
+        resposta(401, false, $nome[1]);
+    }
+
+    //validação do email
+    $email = validar_email ($body->email);
+    if ($email[0] == true){
+        $email = $email[1];
+    } else {
+        resposta (401, false, $email[1]);
+    }
+
+    //validação da senha
+    $senha = validar_senha($body->senha);
+    if ($senha[0] == true){
+        $senha = $senha[1];
+    } else {
+        resposta (401, false, $senha[1]);
+    }
+
+
+    cadastrar($conexao, $nome, $email, $senha);
 }
 
 function cadastrar($conexao, $nome, $email, $senha){
