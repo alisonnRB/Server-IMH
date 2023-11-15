@@ -31,9 +31,22 @@ function oqueAlterar($id){
         if(isset($_POST['nome']) && !empty($_POST['nome'])){
             $nome = true;
         }
+        $nome = validar_nome($nome);
+        if ($nome[0] == true){
+            $nome = $nome[1];
+        } else {
+            resposta(401, false, $nome[1]);
+        }
+
         if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
             $foto = true;
         }
+        $img = validar_img($_FILES);
+        if($img[0]){
+            $okFoto = true;
+        }else{
+            resposta(400, false, $img[1]);
+        }       
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
@@ -124,7 +137,7 @@ function salvaNome($conexao, $consulta){
 
 function salvaClasse($conexao, $consulta){
     $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
-    $stm->bindParam(':classificacao', $classe);
+    $stm->bindParam(':classificacao', $consulta);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
