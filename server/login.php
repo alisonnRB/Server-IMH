@@ -2,12 +2,13 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./token/geraToken.php";
+include "./validações/validacoes.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
-//TODO função que encerra as operações e enciar umas resposta para a api trabalhar
+//TODO função que encerra as operações e enviar umas resposta para a api trabalhar
 
 
 function verifica($body){
@@ -24,27 +25,45 @@ function verifica($body){
     if (empty($body->senha)){
         resposta(200, false, "Preencha o campo da senha");
     }
+   
+    //validação do email
+    $email = validar_email ($body->email);
+    if ($email[0] == true){
+        $email = $email[1];
+    } else {
+        resposta (401, false, $email[1]);
+    }  
 
-    consulta($body);
+    //validação da senha
+    $senha = validar_senha($body->senha);
+    if ($senha[0] == true){
+        $senha = $senha[1];
+    } else {
+        resposta (401, false, $senha[1]);
+    }
+
+    
+    consulta($email, $senha);
 }
 
-function consulta($body){
+function consulta($email, $senha){
 
 
     $conexao = conecta_bd();
 
     //? acessa o email do input
     $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email");
-    $consulta->execute([':email' => $body->email]);
+    $consulta->execute([':email' => $email]);
+   
 
     if ($consulta->rowCount() === 1) {
 
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
-
         //? verifica se senha e email coicidem
-        if ($body->senha === $usuario['senha']) {
+        //?verifica se a senha passada no campo de login coincide com o hash do banco
+        if (password_verify($senha, $usuario['senha'])) {
             $idUser = $conexao->prepare("SELECT id, email FROM usuarios WHERE email = :email");
-            $idUser->execute([':email' => $body->email]);
+            $idUser->execute([':email' => $email]);
             $info = $idUser->fetch(PDO::FETCH_ASSOC);
 
             $token = geraToken($info['id'], $info['email']);

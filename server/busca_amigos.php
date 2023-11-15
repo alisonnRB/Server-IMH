@@ -39,9 +39,10 @@ function busca_amigos($id_user){
                 $stm->bindParam(':id_ref', $seguidor['user_id'] );
                 $stm->execute();
                 $amigos = $stm->fetchAll(PDO::FETCH_ASSOC); 
-
-                $list->{$i} = $amigos;
-                $i++;
+                if ($amigos){
+                    $list->{$i} = $amigos;
+                    $i++;
+                }
             }
         } 
         resposta(200, true, $list);  

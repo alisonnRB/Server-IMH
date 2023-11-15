@@ -16,7 +16,7 @@ $body = json_decode($body);
 verificacao_de_dados($body);
 
 function verificacao_de_dados($body){ 
-    //! Verificar as entradas string, filtrar e etc
+    //! Verificar as entradas string, filtrar e etc (verificado)
     if (empty($body->nome) && empty($body->email) && empty($body->senha)){
         resposta(200, false, "Você deve preencher os campos");
     }
@@ -72,8 +72,13 @@ function verificacao_de_dados($body){
         resposta (401, false, $senha[1]);
     }
 
+    //criptografia da senha
+    $cripto = cripto_senha($senha);
+    
 
-    cadastrar($conexao, $nome, $email, $senha);
+
+
+    cadastrar($conexao, $nome, $email, $cripto);
 }
 
 function cadastrar($conexao, $nome, $email, $senha){

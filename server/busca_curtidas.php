@@ -19,6 +19,23 @@ if($token == "erro"){
    busca_curtidas($body); 
 }
 
+//validar body->id
+$id = validar_int($body['id_ref']);
+if ($id[0] == true){
+    $id = $id[1];
+} else {
+resposta (401, false, $id[1]);
+}
+
+
+//validar body->tipo 
+$tipo = validar_string($body['tipo']);
+if ($tipo[0] == true){
+    $tipo = $tipo[1];
+} else {
+resposta (401, false, $tipo[1]);
+}
+
 function busca_curtidas($body) {
     $conexao = conecta_bd();
 

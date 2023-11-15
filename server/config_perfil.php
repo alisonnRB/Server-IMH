@@ -39,7 +39,7 @@ function oque_alterar($id){
 
         controla($nome, $foto, $id);  
     }else{
-        resposta(400, false, "há algo errado, tente movamente mais tarde :(");
+        resposta(400, false, "há algo errado, tente novamente mais tarde :(");
     }
 }
 
@@ -49,7 +49,7 @@ function controla($nome, $foto, $id){
     $okNome = false;
 
     if($nome){
-        $Nome = validar_string($_POST['nome'], "nome");
+        $Nome = validar_nome($_POST['nome'], "nome");
         if($Nome[0]){
             $okNome = true;
         }else{

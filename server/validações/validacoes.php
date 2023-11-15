@@ -28,7 +28,7 @@ function validar_int($int){
         $int = strip_tags($int);
         return [true, $int];
     } else {
-        return [false, "inteiro indisponivel"];
+        return [false, "dado indisponivel"];
     }
 }
 
@@ -52,6 +52,21 @@ function validar_senha ($senha){
         return [false, "senha inválida"];
     }
 }
+
+//função que criptografa uma senha
+function cripto_senha ($senha){
+            $hash = password_hash($senha, PASSWORD_BCRYPT);
+            return $hash;
+}     
+
+//função que verifica a senha com o hash
+function verifica_senha($senha, $banco){
+    return password_verify($senha, $banco);
+}
+    
+
+
+
 
 //função validando imagem
 function validar_img($img){
