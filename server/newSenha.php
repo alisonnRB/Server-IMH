@@ -8,12 +8,15 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
+
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+
+
 $token = decode_token($body->id);
 if($token == "erro"){
-    resposta(401, false, "não autorizado");
+    resposta(200, false, "não autorizado");
 }else{
     change_senha($token->id, $body);
 }
@@ -25,19 +28,19 @@ function change_senha($id, $body) {
     if ($senhaOG[0] == true){
         $senhaOG = $senhaOG[1];
     } else {
-        resposta (401, false, $senhaOG[1]);
+        resposta (200, false, $senhaOG[1]);
     }
 
     $senhaNew = validar_senha($body->NovaSenha);
     if ($senhaNew[0] == true){
         $senhaNew = $senhaNew[1];
     } else {
-        resposta (401, false, $senhaNew[1]);
+        resposta (200, false, $senhaNew[1]);
     }
 
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
     $consulta = $conexao->prepare('SELECT senha FROM usuarios WHERE id = :id');
     $consulta->bindParam(':id', $id);
@@ -55,7 +58,7 @@ function change_senha($id, $body) {
 
             resposta(200, true, 'senha alterada');
         }else{
-            resposta(401, false, 'essa não é sua senha');
+            resposta(200, false, 'essa não é sua senha');
         }
     }   
 }

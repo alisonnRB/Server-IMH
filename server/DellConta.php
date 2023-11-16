@@ -13,7 +13,7 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 if($token == "erro"){
-    resposta(401, false, "não autorizado");
+    resposta(200, false, "não autorizado");
 }else{
     Dell_verify($token->id, $body);
 }
@@ -25,7 +25,7 @@ function Dell_verify($id, $body) {
     if ($senhaUser[0] == true){
         $senhaUser = $senhaUser[1];
     } else {
-        resposta (401, false, $senhaUser[1]);
+        resposta (200, false, $senhaUser[1]);
     } 
     
     $conexao = conecta_bd();
@@ -43,7 +43,7 @@ function Dell_verify($id, $body) {
     if(password_verify($senhaUser, $Senha)){
         dell($id, $conexao);
     }else{
-        resposta(401, false, 'essa não é sua senha');
+        resposta(200, false, 'essa não é sua senha');
     }
 
 }
@@ -68,7 +68,7 @@ function apaga_coments($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM comentarios WHERE user = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os comentarios');
+        resposta(200, false, 'não foi possivel apagar os comentarios');
     }
 }
 function apaga_curtidas($id, $conexao){
@@ -76,7 +76,7 @@ function apaga_curtidas($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM curtidas WHERE id_user = :id');
     $stmt->execute([':id' => $id]);
     } catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os curtidas');
+        resposta(200, false, 'não foi possivel apagar os curtidas');
     }
 }
 function apaga_favoritos($id, $conexao){
@@ -84,7 +84,7 @@ function apaga_favoritos($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM favoritos WHERE user_id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os favoritos');
+        resposta(200, false, 'não foi possivel apagar os favoritos');
     }
 }
 function apaga_publi($id, $conexao){
@@ -92,7 +92,7 @@ function apaga_publi($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM feed_publi WHERE user_id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os publicacoes');
+        resposta(200, false, 'não foi possivel apagar os publicacoes');
     }
 }
 function apaga_livros($id, $conexao){
@@ -100,7 +100,7 @@ function apaga_livros($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM livro_publi WHERE user_id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os livros');
+        resposta(200, false, 'não foi possivel apagar os livros');
     }
 }
 function apaga_seguidores($id, $conexao){
@@ -108,7 +108,7 @@ function apaga_seguidores($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM seguidores WHERE user_id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os seguidores');
+        resposta(200, false, 'não foi possivel apagar os seguidores');
     }
 }
 function apaga_votos($id, $conexao){
@@ -116,7 +116,7 @@ function apaga_votos($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM votacao WHERE user_id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar os votos');
+        resposta(200, false, 'não foi possivel apagar os votos');
     }
 }
 function apaga_contents($id, $conexao){
@@ -149,7 +149,7 @@ function apaga_contents($id, $conexao){
         rmdir($caminho);
     }
     }catch(Exeception $e){
-        resposta(400, false, 'não foi possivel apagar os arquivos');
+        resposta(200, false, 'não foi possivel apagar os arquivos');
     }
 }
 function apaga_foto($id, $conexao){
@@ -163,7 +163,7 @@ function apaga_foto($id, $conexao){
         unlink($caminho);
     }
     }catch(Exeception $e){
-        resposta(400, false, 'não foi possivel apagar a foto');
+        resposta(200, false, 'não foi possivel apagar a foto');
     }
 }
 
@@ -172,7 +172,7 @@ function apaga_conta($id, $conexao){
     $stmt = $conexao->prepare('DELETE FROM usuarios WHERE id = :id');
     $stmt->execute([':id' => $id]);
     }catch(PDOExeception $e){
-        resposta(400, false, 'não foi possivel apagar a conta');
+        resposta(200, false, 'não foi possivel apagar a conta');
     }
 }
 
