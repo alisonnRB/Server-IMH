@@ -12,30 +12,30 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
-}else{
-    quaisGeneros();   
+if ($token == "erro") {
+    resposta(200, false, "Não autorizado");
+} else {
+    quaisGeneros($body->idioma);
 }
-//! verificar id
-function quaisGeneros(){
-    try{
+
+function quaisGeneros($nomeColuna){
+    try {
         $conexao = conecta_bd();
 
-        $stmt = $conexao->prepare("SELECT id, nome FROM genero");
+        // Use uma declaração preparada para a coluna
+        $stmt = $conexao->prepare("SELECT id, {$nomeColuna} FROM genero");
         $stmt->execute();
-        $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $list = array();
 
-        foreach ($stmt as $row) {
-            $list[$row['id']] = $row['nome'];
+        foreach ($result as $row) {
+            $list[$row['id']] = $row[$nomeColuna];
         }
 
         resposta(200, true, $list);
-    }catch(Exception $e){
-        resposta(500, false, []);
+    } catch (PDOException $e) {
+        resposta(200, false, "Erro no servidor: " . $e->getMessage());
     }
 }
-
 ?>
