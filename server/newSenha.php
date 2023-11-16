@@ -43,7 +43,7 @@ function change_senha($id, $body) {
     $consulta->bindParam(':id', $id);
     $consulta->execute();
     $Senha = $consulta->fetchColumn();
-    }
+    
 
     //! verificar com hash
 
@@ -59,7 +59,7 @@ function change_senha($id, $body) {
     }else{
         resposta(401, false, 'essa não é sua senha');
     }
-
+}
 }
 
 ?>
