@@ -21,6 +21,13 @@ if($token == "erro"){
 function Dell_verify($id, $body) {
     //!validar entrada senha
 
+    $senhaUser = validar_senha($body->senha);
+    if ($senhaUser[0] == true){
+        $senhaUser = $senhaUser[1];
+    } else {
+        resposta (401, false, $senhaUser[1]);
+    } 
+    
     $conexao = conecta_bd();
     if (!$conexao) {
         resposta(500, false, "Houve um problema ao conectar ao servidor");
@@ -33,7 +40,7 @@ function Dell_verify($id, $body) {
 
     //!adaptar para criptografia
 
-    if($Senha == $body->senha){
+    if(password_verify($senhaUser, $Senha)){
         dell($id, $conexao);
     }else{
         resposta(401, false, 'essa não é sua senha');

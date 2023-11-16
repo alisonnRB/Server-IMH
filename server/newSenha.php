@@ -46,8 +46,6 @@ function change_senha($id, $body) {
     
 
     //! verificar com hash
-
-
         if(password_verify($senhaOG, $Senha)){
         //!converter a senha para hash
         $cripto_senha = cripto_senha($senhaNew);
@@ -55,11 +53,11 @@ function change_senha($id, $body) {
         $stmt->execute([$cripto_senha, $id]);
 
 
-        resposta(200, true, 'senha alterada');
-    }else{
-        resposta(401, false, 'essa não é sua senha');
-    }
-}
+            resposta(200, true, 'senha alterada');
+        }else{
+            resposta(401, false, 'essa não é sua senha');
+        }
+    }   
 }
 
 ?>
