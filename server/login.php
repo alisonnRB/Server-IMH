@@ -31,7 +31,7 @@ function verifica($body){
     if ($email[0] == true){
         $email = $email[1];
     } else {
-        resposta (401, false, $email[1]);
+        resposta (200, false, $email[1]);
     }  
 
     //validação da senha
@@ -39,7 +39,7 @@ function verifica($body){
     if ($senha[0] == true){
         $senha = $senha[1];
     } else {
-        resposta (401, false, $senha[1]);
+        resposta (200, false, $senha[1]);
     }
 
     
@@ -70,10 +70,10 @@ function consulta($email, $senha){
 
             resposta(200, true, $token);
         }else{
-            resposta(400, false, "Senha incorreta");
+            resposta(200, false, "Senha incorreta");
         }
     }else{
-        resposta(400, false, "Email não registrado!");
+        resposta(200, false, "Email não registrado!");
     }
 }
 

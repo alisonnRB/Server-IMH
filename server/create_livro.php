@@ -12,8 +12,8 @@ header('Access-Control-Allow-Headers: *');
 
 
 $token = decode_token($_POST['id']);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     oqueAlterar($token->id);
 }
@@ -35,7 +35,7 @@ function oqueAlterar($id){
         if ($nome[0] == true){
             $nome = $nome[1];
         } else {
-            resposta(401, false, $nome[1]);
+            resposta(200, false, $nome[1]);
         }
 
         if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
@@ -45,14 +45,14 @@ function oqueAlterar($id){
         if($img[0]){
             $okFoto = true;
         }else{
-            resposta(400, false, $img[1]);
+            resposta(200, false, $img[1]);
         }       
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
         controla($nome, $foto, $selecao, $id);  
     }else{
-        resposta(400, false, "há algo errado, tente movamente mais tarde :(");
+        resposta(200, false, "há algo errado, tente movamente mais tarde :(");
     }
 }
 function controla($nome, $foto, $selecao, $id){
@@ -61,7 +61,7 @@ function controla($nome, $foto, $selecao, $id){
     //? cria a conexão
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
 
         $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
@@ -92,7 +92,7 @@ function controla($nome, $foto, $selecao, $id){
         if($Img[0]){
             $okFoto = true;
         }else{
-            resposta(400, false, $Img[1]);
+            resposta(200, false, $Img[1]);
         }
     }
 
@@ -124,7 +124,7 @@ function salvaFoto($conexao, $nomeUnico, $consulta, $destino){
         $stm->bindParam(':id', $consulta);
         $stm->execute();
     } else {
-        resposta(500, false, "Algo deu errado com o arquivo.");
+        resposta(200, false, "Algo deu errado com o arquivo.");
     }
 }
 

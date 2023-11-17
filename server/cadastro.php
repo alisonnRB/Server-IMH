@@ -38,7 +38,7 @@ function verificacao_de_dados($body){
 
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
         $consulta = $conexao->prepare('SELECT email FROM usuarios WHERE email = :email');
         $consulta->execute([':email' => $body->email]);
@@ -53,7 +53,7 @@ function verificacao_de_dados($body){
     if ($nome[0] == true){
         $nome = $nome[1];
     } else {
-        resposta(401, false, $nome[1]);
+        resposta(200, false, $nome[1]);
     }
 
     //validação do email
@@ -61,7 +61,7 @@ function verificacao_de_dados($body){
     if ($email[0] == true){
         $email = $email[1];
     } else {
-        resposta (401, false, $email[1]);
+        resposta (200, false, $email[1]);
     }
 
     //validação da senha
@@ -69,7 +69,7 @@ function verificacao_de_dados($body){
     if ($senha[0] == true){
         $senha = $senha[1];
     } else {
-        resposta (401, false, $senha[1]);
+        resposta (200, false, $senha[1]);
     }
 
     //criptografia da senha
@@ -100,7 +100,7 @@ function cadastrar($conexao, $nome, $email, $senha){
         }
         resposta(200,true,'msg salvA');  
     }catch(Exception $e){
-        resposta(500, false, "algo deu errado");
+        resposta(200, false, "algo deu errado");
     }
 }
 ?>

@@ -12,8 +12,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id_user);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     Favoritar($token->id, $body->id_ref);
 }
@@ -21,7 +21,7 @@ if($token == "erro"){
 function Favoritar($id_user, $id_ref){
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
 
         $consulta = $conexao->prepare('SELECT * FROM favoritos WHERE user_id = :id_user AND id_livro = :id_ref');

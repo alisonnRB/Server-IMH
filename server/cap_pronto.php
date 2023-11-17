@@ -13,8 +13,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     salva_cap_pronto($token->id, $body);
 }
@@ -23,13 +23,13 @@ function salva_cap_pronto ($id, $body){
     $conexao = conecta_bd(); 
 
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     }else{
         $consulta = $conexao->prepare('SELECT user_id, pronto FROM livro_publi WHERE id = :id');
         $consulta->execute([':id' => $body->idLivro]);
         $linha = $consulta->fetch(PDO::FETCH_ASSOC);
         if($linha['user_id'] != $id){
-            resposta(401, false, "você não pode alterar livros que não são seus");
+            resposta(200, false, "você não pode alterar livros que não são seus");
         }else{
             $public = json_decode($linha['pronto'], true);
 

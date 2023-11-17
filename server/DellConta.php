@@ -12,7 +12,7 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
+if(!$token || $token == "erro"){
     resposta(200, false, "não autorizado");
 }else{
     Dell_verify($token->id, $body);
@@ -30,7 +30,7 @@ function Dell_verify($id, $body) {
     
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     }
 
     $consulta = $conexao->prepare('SELECT senha FROM usuarios WHERE id = :id');

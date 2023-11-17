@@ -12,8 +12,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     votar($token->id, $body);
 }
@@ -21,7 +21,7 @@ if($token == "erro"){
 function votar($id_user, $body){
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
         $consulta = $conexao->prepare('SELECT * FROM votacao WHERE user_id = :id_user AND id_ref = :id_ref');
         $consulta->bindParam(':id_user', $id_user);
@@ -38,7 +38,7 @@ function votar($id_user, $body){
             
             resposta(200, true, "certo");
         }
-        resposta(401, false, "ja votou");
+        resposta(200, false, "ja votou");
 
     }
 }

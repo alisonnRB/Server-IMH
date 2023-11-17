@@ -12,8 +12,8 @@ header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
 $token = decode_token($_POST['id']);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     oqueAlterar($token->id);
 }
@@ -49,7 +49,7 @@ function controla($nome, $foto, $selecao, $id){
     //? cria a conexão
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
 
     if(!empty($_POST['classificacao'])){
@@ -103,7 +103,7 @@ function verificaFoto(){
 
     //? informa que não é possível a imagem, pois não é um formato compatível
     if (!in_array($tipoMIME, $tiposMIMEPermitidos)) {
-        resposta(400, false, "Tipo de arquivo não permitido.");
+        resposta(200, false, "Tipo de arquivo não permitido.");
     }else{
         return true;
     }
@@ -133,7 +133,7 @@ function salvaFoto($conexao, $nomeUnico, $id){
         $stm->bindParam(':id', $_POST['idLivro']);
         $stm->execute();
     } else {
-        resposta(500, false, "Algo deu errado com o arquivo.");
+        resposta(200, false, "Algo deu errado com o arquivo.");
     }
 }
 function salvaNome($conexao, $id){

@@ -12,8 +12,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->idUser);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     verifica($token->id,$body);
 }
@@ -22,7 +22,7 @@ if($token == "erro"){
 function verifica($idUser, $body){
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
     $consulta = $conexao->prepare('SELECT texto, nome, pronto FROM livro_publi WHERE id = :id');
     $consulta->execute([':id' => $body->id]);

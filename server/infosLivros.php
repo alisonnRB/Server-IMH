@@ -11,8 +11,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     info_livro($body);
 }
@@ -27,7 +27,7 @@ function info_livro($body) {
 
         resposta(200, true, $stmt);
     } catch (Exception $e) {
-        resposta(500, false, ['...']);
+        resposta(200, false, ['...']);
     }
 }
 

@@ -13,8 +13,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->idUser);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     qualSave($token->id,$body);
 }
@@ -23,7 +23,7 @@ if($token == "erro"){
 function qualSave($user_id, $body) {
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
     if($body->cap == 0){
         $consulta = $conexao->prepare('SELECT user_id FROM livro_publi WHERE id = :id');
@@ -32,7 +32,7 @@ function qualSave($user_id, $body) {
         $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
         if($linha['user_id'] != $user_id){
-            resposta(401, false, "não é seu livro");
+            resposta(200, false, "não é seu livro");
         }else{
         SaveSinopse($body, $conexao, $user_id);}
     }
@@ -49,7 +49,7 @@ function PrepareCap($body, $conexao, $user_id){
     $linha = $consulta->fetch(PDO::FETCH_ASSOC);
 
     if($linha['user_id'] != $user_id){
-        resposta(401, false, "não é seu livro");
+        resposta(200, false, "não é seu livro");
     }else{
         if ($linha) {
         $caminhoPasta = '../livros/' . $user_id . '/' . $linha['nome'] . '_' . $body->id . '/';

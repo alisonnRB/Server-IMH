@@ -15,7 +15,7 @@ $body = json_decode($body);
 
 
 $token = decode_token($body->id);
-if($token == "erro"){
+if(!$token || $token == "erro"){
     resposta(200, false, "não autorizado");
 }else{
     change_senha($token->id, $body);

@@ -12,8 +12,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
    salva($token->id, $body->selecionados); 
 }
@@ -23,7 +23,7 @@ function salva($id, $selecao){
     try {
         $conexao = conecta_bd();
         if (!$conexao) {
-            resposta(500, false, "Houve um problema ao conectar ao servidor");
+            resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
             $lista = array();
         
@@ -39,7 +39,7 @@ function salva($id, $selecao){
         
         resposta(200, true, 'Salvo com sucesso');
     }} catch (Exception $e) {
-        resposta(500, false, 'Algo deu errado :(');
+        resposta(200, false, 'Algo deu errado :(');
     }
 }
 

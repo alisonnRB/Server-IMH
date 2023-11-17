@@ -15,8 +15,8 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     qual($token->id, $body);   
 }

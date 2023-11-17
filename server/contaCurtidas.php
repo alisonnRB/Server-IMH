@@ -50,7 +50,7 @@ function salva($conexao, $tabela, $id) {
 function alterar(){
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
     Livroslike($conexao);
     comentariolike($conexao);

@@ -15,8 +15,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id_user);
-if($token == "erro"){
-    resposta(401, true, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, true, "não autorizado");
 }else{
     comentar($token->id,$body);
 }
@@ -26,7 +26,7 @@ function comentar($id_user, $body){
     $conexao = conecta_bd();
 
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
         $data = date('Y-m-d H:i:s');
 
@@ -54,7 +54,7 @@ function comentar($id_user, $body){
         if ($id_user[0] == true) {
             $id_user = $id_user[1];
         } else {
-            resposta(401, false, $id_user[1]);
+            resposta(200, false, $id_user[1]);
         }
 
         //validar body->tipo 
@@ -62,7 +62,7 @@ function comentar($id_user, $body){
         if ($tipo[0] == true) {
             $tipo = $tipo[1];
         } else {
-            resposta(401, false, $tipo[1]);
+            resposta(200, false, $tipo[1]);
         }
 
         //validar id ref
@@ -70,7 +70,7 @@ function comentar($id_user, $body){
         if ($id_ref[0] == true) {
             $id_ref = $id_ref[1];
         } else {
-            resposta(401, false, $id_ref[1]);
+            resposta(200, false, $id_ref[1]);
         }
         
         //validar texto
@@ -78,7 +78,7 @@ function comentar($id_user, $body){
         if ($texto[0] == true) {
             $texto = $texto[1];
         } else {
-            resposta(401, false, $texto[1]);
+            resposta(200, false, $texto[1]);
         }
 
         //validar resposta
@@ -86,7 +86,7 @@ function comentar($id_user, $body){
         if ($resposta[0] == true) {
             $resposta = $resposta[1];
         } else {
-            resposta(401, false, $resposta[1]);
+            resposta(200, false, $resposta[1]);
         }
 
         //validar id resposta 
@@ -94,14 +94,14 @@ function comentar($id_user, $body){
         if ($id_resposta[0] == true) {
             $id_resposta = $id_resposta[1];
         } else {
-            resposta(401, false, $id_resposta[1]);
+            resposta(200, false, $id_resposta[1]);
         }
 
         $conversa = validar_string($body->conversa);
         if ($conversa[0] == true) {
             $conversa = $conversa[1];
         } else {
-                resposta(401, false, $conversa[1]);
+                resposta(200, false, $conversa[1]);
         }*/
 }
 ?>

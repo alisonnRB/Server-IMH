@@ -24,7 +24,7 @@ function Busca_usuarios ($body){
 
 
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
         $search = '';
         $params = array();
@@ -38,7 +38,7 @@ function Busca_usuarios ($body){
             if ($nome[0] == true){
                 $nome = $nome[1];
             } else {
-                resposta(401, false, $nome[1]);
+                resposta(200, false, $nome[1]);
             }
             
         }else{

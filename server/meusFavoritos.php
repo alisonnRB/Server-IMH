@@ -16,8 +16,8 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id);
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     quaisLivros($token->id);   
 }
@@ -26,7 +26,7 @@ function quaisLivros($id){
     try{
         $conexao = conecta_bd();
         if (!$conexao) {
-            resposta(500, false, "Houve um problema ao conectar ao servidor");
+            resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
 
         $consulta = $conexao->prepare("SELECT id_livro FROM favoritos WHERE user_id = :user_id");
@@ -51,7 +51,7 @@ function quaisLivros($id){
             
     }
     }catch (Exception $e) {
-        resposta(500, false, null);
+        resposta(200, false, null);
     }
 }
 

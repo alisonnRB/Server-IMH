@@ -10,7 +10,7 @@ header('Access-Control-Allow-Methods: POST');
 function visu($body){
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
 
 

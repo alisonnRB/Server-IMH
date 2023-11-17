@@ -62,7 +62,7 @@ function quaisLivros($search, $params){
     try {
         $conexao = conecta_bd();
         if (!$conexao) {
-            resposta(500, false, "Houve um problema ao conectar ao servidor");
+            resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
 
         $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search";
@@ -72,7 +72,7 @@ function quaisLivros($search, $params){
 
         resposta(200, true, $livros);
     }} catch (Exception $e) {
-        resposta(500, false, null);
+        resposta(200, false, null);
     }
 }
 

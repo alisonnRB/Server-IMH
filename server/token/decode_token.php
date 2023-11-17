@@ -11,10 +11,14 @@
         try{
             $decoded = JWT::decode($token, new Key($_SERVER['KEY'], 'HS256'));
             return $decoded;
+        } catch (BeforeValidException $e) {
+            return "erro";
         }catch(Throwable $e){
             if($e->getMessage() == 'Expired token'){
                 return "erro";     
             }   
+        }catch(Exception $e){
+            return "erro";
         }
     }
 

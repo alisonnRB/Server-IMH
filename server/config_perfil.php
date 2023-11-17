@@ -13,8 +13,8 @@ header('Access-Control-Allow-Headers: *');
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
 $token = decode_token($_POST["id"]);
 
-if($token == "erro"){
-    resposta(401, false, "não autorizado");
+if(!$token || $token == "erro"){
+    resposta(200, false, "não autorizado");
 }else{
     oque_alterar($token->id);
 }
@@ -39,7 +39,7 @@ function oque_alterar($id){
 
         controla($nome, $foto, $id);  
     }else{
-        resposta(400, false, "há algo errado, tente novamente mais tarde :(");
+        resposta(200, false, "há algo errado, tente novamente mais tarde :(");
     }
 }
 
@@ -53,7 +53,7 @@ function controla($nome, $foto, $id){
         if($Nome[0]){
             $okNome = true;
         }else{
-            resposta(400, false, $Nome[1]);
+            resposta(200, false, $Nome[1]);
         }
     }
 
@@ -62,17 +62,17 @@ function controla($nome, $foto, $id){
         if($Img[0]){
             $okFoto = true;
         }else{
-            resposta(400, false, $Img[1]);
+            resposta(200, false, $Img[1]);
         }
     }
 
     if($nome == false && $foto == false){
-        resposta(400, false, "não quer mudar nada :/");
+        resposta(200, false, "não quer mudar nada :/");
     }
 
     $conexao = conecta_bd();
     if(!$conexao){
-        resposta(500, false, "algo errado no server");
+        resposta(200, false, "algo errado no server");
     }else{
         if($foto == true && $okFoto == true){
 
@@ -114,7 +114,7 @@ function salvaFoto($conexao, $nomeUnico, $id){
         $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
         $stmt->execute([$nomeUnico, $id]);
     }else{
-        resposta(500, false, "Algo deu errado com o arquivo.");
+        resposta(200, false, "Algo deu errado com o arquivo.");
     }
 }
 function salvaNome($conexao, $Nome, $id){

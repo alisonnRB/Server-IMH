@@ -19,7 +19,7 @@ $id = validar_int($body['id_ref']);
 if ($id[0] == true){
     $id = $id[1];
 } else {
-resposta (401, false, $id[1]);
+resposta (200, false, $id[1]);
 }
 
 
@@ -28,7 +28,7 @@ $tipo = validar_string($body['tipo']);
 if ($tipo[0] == true){
     $tipo = $tipo[1];
 } else {
-resposta (401, false, $tipo[1]);
+resposta (200, false, $tipo[1]);
 }
 
 function busca_comentarios($body){
@@ -36,7 +36,7 @@ function busca_comentarios($body){
 
     
     if (!$conexao) {
-        resposta(500, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
         $stmt = $conexao->prepare("SELECT id, id_ref, user, texto, resposta, id_resposta, tempo, conversa, curtidas FROM comentarios WHERE id_ref = :id_ref AND tipo = :tipo");
         $stmt->execute([':id_ref' => $body->id, ':tipo' => $body->tipo]);
