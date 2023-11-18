@@ -37,13 +37,21 @@ function oque_alterar($id){
             $foto = true;
         }
 
-        controla($nome, $foto, $id);  
+        controla($nome, $foto, $id, $_POST['idioma']);  
     }else{
-        resposta(200, false, "há algo errado, tente novamente mais tarde :(");
+        if ($_POST['idioma'] == "PT"){
+            resposta(200, false, "há algo errado, tente novamente mais tarde :(");
+        }
+        else if ($_POST['idioma'] == "ES"){
+            resposta(200, false, "Hay algo mal, inténtalo de nuevo más tarde :(");
+        }
+        else if ($_POST['idioma'] == "EN"){
+            resposta(200, false, "there is something wrong, try again later :(");
+        }
     }
 }
 
-function controla($nome, $foto, $id){
+function controla($nome, $foto, $id, $idioma){
 
     $okFoto = false;
     $okNome = false;
@@ -67,7 +75,15 @@ function controla($nome, $foto, $id){
     }
 
     if($nome == false && $foto == false){
-        resposta(200, false, "não quer mudar nada :/");
+        if ($_POST['idioma'] == "PT"){
+            resposta(200, false, "não quer mudar nada :/");
+        }
+        else if ($_POST['idioma'] == "ES"){
+            resposta(200, false, "No quieres cambiar nada :/");
+        }
+        else if ($_POST['idioma'] == "EN"){
+            resposta(200, false, "Don't want to change anything :/");
+        }
     }
 
     $conexao = conecta_bd();
@@ -114,7 +130,15 @@ function salvaFoto($conexao, $nomeUnico, $id){
         $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
         $stmt->execute([$nomeUnico, $id]);
     }else{
-        resposta(200, false, "Algo deu errado com o arquivo.");
+        if ($_POST['idioma'] == "PT"){
+            resposta(200, false, "Algo deu errado com o arquivo.");
+        }
+        else if ($_POST['idioma'] == "ES"){
+            resposta(200, false, "Algo salió mal con el archivo.");
+        }
+        else if ($_POST['idioma'] == "EN"){
+            resposta(200, false, "Something went wrong with the file.");
+        }
     }
 }
 function salvaNome($conexao, $Nome, $id){

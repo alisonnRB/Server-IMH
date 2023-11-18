@@ -55,10 +55,25 @@ function change_senha($id, $body) {
         $stmt = $conexao->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
         $stmt->execute([$cripto_senha, $id]);
 
-
+        if ($body->idioma == "PT"){
             resposta(200, true, 'senha alterada');
+        }
+        else if ($body->idioma == "ES"){
+            resposta(200, true, 'contraseña cambiada');
+        }
+        else if ($body->idioma == "EN"){
+            resposta(200, true, 'password changed');
+        }
         }else{
-            resposta(200, false, 'essa não é sua senha');
+            if ($body->idioma == "PT"){
+                resposta(200, false, 'essa não é sua senha');
+            }
+            else if ($body->idioma == "ES"){
+                resposta(200, false, 'esta no es tu contraseña');
+            }
+            else if ($body->idioma == "EN"){
+                resposta(200, false, 'this is not your password');
+            }
         }
     }   
 }
