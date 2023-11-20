@@ -46,7 +46,7 @@ function oqueAlterar($id){
             $okFoto = true;
         }else{
             resposta(200, false, $img[1]);
-        }       
+        }      
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
