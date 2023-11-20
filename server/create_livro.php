@@ -39,14 +39,16 @@ function oqueAlterar($id){
         }
 
         if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
-            $foto = true;
-        }
-        $img = validar_img($_FILES);
+            $foto = true; 
+                 $img = validar_img($_FILES);
         if($img[0]){
-            $okFoto = true;
+            $foto = true;
         }else{
             resposta(200, false, $img[1]);
-        }      
+        }       
+        }
+
+  
         if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
             $selecao = true;
         }
