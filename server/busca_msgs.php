@@ -24,7 +24,9 @@ if(!$token || $token == "erro"){
 function busca_visus($id){
 
     $conexao = conecta_bd();
-
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    }else{
     $visus = $conexao->prepare('SELECT count(*) AS Num FROM chats WHERE visu = 0 AND id_user2 = :id_user2');
     $visus->bindParam(':id_user2', $id);
     $visus->execute();
@@ -32,8 +34,8 @@ function busca_visus($id){
 
     resposta(200, true, $visus);
 
+    }
 }
-
 
 
 
