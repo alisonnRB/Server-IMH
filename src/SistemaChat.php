@@ -24,33 +24,53 @@ class SistemaChat implements MessageComponentInterface {
         parse_str($queryParams, $queryData);
         if (isset($queryData['id'])) {
             $conn->id = $queryData['id'];
+            $conn->for = $queryData['for'];
+
+            $visualizar = $this->conexao->prepare('UPDATE chats SET visu = 1 WHERE id_user1 = ? AND id_user2 = ?');
+            $visualizar->execute([$queryData['for'], $queryData['id']]);
         }else{
             $conn->close();
         }
         
         $this->clientes->attach($conn);
 
-        echo "Nova conexão: {$conn->resourceId} e {$conn->id}\n";
+        echo "Nova conexão: {$conn->resourceId} e {$conn->id} e {$conn->for}\n";
         
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
+        $on = 0;
         $messageJSON = json_decode($msg);
+
         foreach ($this->clientes as $cliente) {
             if($cliente->id == $messageJSON->for && $cliente->resourceId != $from){
-                $cliente->send($msg); 
+                if($cliente->for == $from->id){
+                    echo "esse: {$cliente->from} recebeu de {$from->id}\n"; 
+                    $on = 1;
+                    
+                    $cliente->send($msg); 
+                    echo "code: {$messageJSON->code}";
+                }else{
+                    $messageJSON->code = 500;
+                    $msg = json_encode($messageJSON);
+                    $cliente->send($msg);
+
+                    echo "code: {$messageJSON->code}";
+                }
+                
 
                 echo "esse: {$cliente->id}\n";
-                break;
             }
         }
 
+        
         $data = date('Y-m-d H:i:s');
-        $stmt = $this->conexao->prepare('INSERT INTO chats (id_user1, id_user2, texto, tempo) VALUES (:id_user1, :id_user2, :texto, :tempo)');
+        $stmt = $this->conexao->prepare('INSERT INTO chats (id_user1, id_user2, texto, tempo, visu) VALUES (:id_user1, :id_user2, :texto, :tempo, :visu)');
         $stmt->bindParam(':id_user1', $from->id);
         $stmt->bindParam(':id_user2', $messageJSON->for);
         $stmt->bindParam(':texto', $messageJSON->message);
         $stmt->bindParam(':tempo', $data); 
+        $stmt->bindParam(':visu', $on); 
         $stmt->execute();
         
         echo "Usuário: {$from->resourceId} mandou: {$msg} para: {$messageJSON->for}\n\n";
