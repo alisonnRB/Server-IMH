@@ -15,7 +15,21 @@ $body = json_decode($body);
 busca_comentarios($body);
 
 //validar body->id
+$id = validar_int($body['id_ref']);
+if ($id[0] == true){
+    $id = $id[1];
+} else {
+resposta (200, false, $id[1]);
+}
 
+
+//validar body->tipo 
+$tipo = validar_string($body['tipo']);
+if ($tipo[0] == true){
+    $tipo = $tipo[1];
+} else {
+resposta (200, false, $tipo[1]);
+}
 
 function busca_comentarios($body){
     $conexao = conecta_bd();

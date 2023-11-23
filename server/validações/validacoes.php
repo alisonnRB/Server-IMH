@@ -25,6 +25,7 @@ function validar_string($string){
 //função validando int
 function validar_int($int){
     if (isset($int) && !empty($int) && filter_var($int,FILTER_VALIDATE_INT)){
+        $int = strip_tags($int);
         return [true, $int];
     } else {
         return [false, "dado indisponivel"];
