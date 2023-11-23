@@ -13,9 +13,11 @@ header('Access-Control-Allow-Headers: *');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
+
 $token = decode_token($body->id);
 if(!$token || $token == "erro"){
     resposta(200, false, "não autorizado");
+
 }else{
     if($body->idUser == "i"){
         resposta(200, true, objectInfo($token->id));    
