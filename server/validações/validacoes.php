@@ -13,7 +13,7 @@ function validar_nome ($string){
 
 //função validando string
 function validar_string($string){
-    $padrao_string = "/^[a-zA-Z0-9ç!@#$%^&*_+\[\]:;,.?~\\-]+$/u";
+    $padrao_string = "/^[a-zA-Z0-9ç\s!@#$%^&*_+\[\]:;,.?~\\-]+$/u";
     if (isset($string) && !empty($string) && filter_var($string,FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => $padrao_string)))){
         $string = strip_tags($string);
         return [true, $string];
