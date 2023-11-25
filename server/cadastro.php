@@ -40,7 +40,7 @@ function verificacao_de_dados($body){
     if (!$conexao) {
         resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
-        $consulta = $conexao->prepare('SELECT email FROM usuarios WHERE email = :email');
+        $consulta = $conexao->prepare("SELECT email FROM usuarios WHERE email = :email AND tipo = 'ihm' ");
         $consulta->execute([':email' => $body->email]);
         $consulta = $consulta->fetchColumn();
         if ($body->email == $consulta){
@@ -89,9 +89,7 @@ function cadastrar($conexao, $nome, $email, $senha){
         $stm->bindParam('senha', $senha);
         $stm->execute();
 
-        $id = $conexao->prepare("SELECT id FROM usuarios WHERE email = :email");
-        $id->execute([':email' => $email]);
-        $id = $id->fetchColumn();
+        $id = $conexao->lastInsertId();
 
         $destina = '../livros/';
         $nomeDaPasta = $id;   
