@@ -3,6 +3,7 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./token/decode_token.php";
+include "./validações/validacoes.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -25,13 +26,17 @@ function busca_visus($id){
 
     $conexao = conecta_bd();
 
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
+
     $visus = $conexao->prepare('SELECT count(*) AS Num FROM chats WHERE visu = 0 AND id_user2 = :id_user2');
     $visus->bindParam(':id_user2', $id);
     $visus->execute();
     $visus = $visus->fetch(PDO::FETCH_ASSOC);
 
     resposta(200, true, $visus);
-
+    }
 }
 
 
