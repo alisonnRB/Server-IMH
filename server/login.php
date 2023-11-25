@@ -52,7 +52,7 @@ function consulta($email, $senha){
     $conexao = conecta_bd();
 
     //? acessa o email do input
-    $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email");
+    $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email AND tipo = 'ihm' ");
     $consulta->execute([':email' => $email]);
    
 
@@ -62,7 +62,7 @@ function consulta($email, $senha){
         //? verifica se senha e email coicidem
         //?verifica se a senha passada no campo de login coincide com o hash do banco
         if (password_verify($senha, $usuario['senha'])) {
-            $idUser = $conexao->prepare("SELECT id, email FROM usuarios WHERE email = :email");
+            $idUser = $conexao->prepare("SELECT id, email FROM usuarios WHERE email = :email AND tipo = 'ihm'");
             $idUser->execute([':email' => $email]);
             $info = $idUser->fetch(PDO::FETCH_ASSOC);
 
