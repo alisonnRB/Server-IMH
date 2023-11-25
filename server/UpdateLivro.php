@@ -79,6 +79,7 @@ function controla($nome, $foto, $selecao, $id){
     }
     salvaFim($conexao);
     salvaPubliFin($conexao);
+    notifica($conexao);
 
     resposta(200, true, "Dados atualizados com sucesso.");
     }
@@ -202,6 +203,11 @@ function salvaTags($conexao){
     $stm->bindParam(':tags', $_POST['tags']);
     $stm->bindParam(':id', $_POST['idLivro']);
     $stm->execute();
+}
+
+function notifica($conexao){
+    $stm = $conexao->prepare('UPDATE favoritos SET visu = 0 WHERE id_livro = ?');
+    $stm->execute([$_POST['idLivro']]);
 }
 
 ?>

@@ -15,13 +15,14 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id_user);
-if(!$token || $token == "erro"){
+if (!$token || $token == "erro") {
     resposta(200, true, "não autorizado");
-}else{
-    comentar($token->id,$body);
+} else {
+    comentar($token->id, $body);
 }
 
-function comentar($id_user, $body){
+function comentar($id_user, $body)
+{
     //! Verificar entrada string, filtrar e etc
     $conexao = conecta_bd();
 
@@ -30,9 +31,9 @@ function comentar($id_user, $body){
     } else {
         $data = date('Y-m-d H:i:s');
 
-        $resposta = $body->resposta? 1 : 0;
-        
-    
+        $resposta = $body->resposta ? 1 : 0;
+
+
         $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa ) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
         $stm->bindParam(':user', $id_user);
         $stm->bindParam(':tipo', $body->tipo);
@@ -42,9 +43,9 @@ function comentar($id_user, $body){
         $stm->bindParam(':id_resposta', $body->idResposta);
         $stm->bindParam(':tempo', $data);
         $stm->bindParam(':conversa', $body->conversa);
-    
+
         $stm->execute();
-    
+
         resposta(200, true, "Deu certo");
     }
 
