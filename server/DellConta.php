@@ -190,7 +190,7 @@ function apaga_contents($id, $conexao, $idioma){
 
                 // Verifica se é um diretório e apaga recursivamente
                 if (is_dir($caminhoCompleto)) {
-                    apagarPasta($caminhoCompleto);
+                    apaga_contents($caminhoCompleto, $conexao, $idioma);
                 } else {
                     // Se for um arquivo, o exclui
                     unlink($caminhoCompleto);
