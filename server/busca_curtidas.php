@@ -16,27 +16,27 @@ $token = decode_token($body->id);
 if(!$token || $token == "erro"){
     resposta(200, false, "não autorizado");
 }else{
-   busca_curtidas($body); 
+   busca_curtidas($id_ref, $tipo); 
 }
 
 //validar body->id
-$id = validar_int($body['id_ref']);
-if ($id[0] == true){
-    $id = $id[1];
+$id_ref = validar_int($body->id_ref);
+if ($id_ref[0] == true){
+    $id_ref = $id_ref[1];
 } else {
-resposta (200, false, $id[1]);
+resposta (200, false, $id_ref[1]);
 }
 
 
 //validar body->tipo 
-$tipo = validar_string($body['tipo']);
+$tipo = validar_string($body->tipo);
 if ($tipo[0] == true){
     $tipo = $tipo[1];
 } else {
 resposta (200, false, $tipo[1]);
 }
 
-function busca_curtidas($body) {
+function busca_curtidas($id, $tipo) {
     $conexao = conecta_bd();
 
     if (!$conexao) {
@@ -44,8 +44,8 @@ function busca_curtidas($body) {
     } else {
         
     $consulta = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE id_ref = :id_ref AND tipo = :tipo");
-    $consulta->bindParam(':id_ref', $body->id_ref);
-    $consulta->bindParam(':tipo', $body->tipo);
+    $consulta->bindParam(':id_ref', $id_ref);
+    $consulta->bindParam(':tipo', $tipo);
     $consulta->execute();
     $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
