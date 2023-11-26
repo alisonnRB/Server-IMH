@@ -23,6 +23,9 @@ if(!$token || $token == "erro"){
 function busca_enquete($id_ref) {
     // Verificação da conexão
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
     $stm = $conexao->prepare('SELECT votos FROM enquete WHERE id = :id');
     $stm->bindParam(':id', $id_ref);
@@ -31,6 +34,7 @@ function busca_enquete($id_ref) {
 
 
     resposta(200, true, $votes[0]['votos']);
+    }
 }
 
 

@@ -22,21 +22,25 @@ if (!$token || $token == "erro") {
 function busca_noti($id)
 {
     $conexao = conecta_bd();
-    //!! verificar
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
+        //!! verificar
 
-    $noti = [];
+        $noti = [];
 
-    $noti["seguidores"] = novo_seguidor($conexao, $id);//*certo
-    $noti["livros-coment"] = novos_comentarios($conexao, $id);//*certo
-    $noti["coment-coment"] = novos_comentarios_coment($conexao, $id);//*certo
-    $noti["publi"] = novos_comentarios_publi($conexao, $id);//*certo
-    $noti["favoritos"] = novidade($conexao, $id);//*certo
-    $noti["curtidas-livro"] = nova_curtida($conexao, $id);//*certo
-    $noti["curtidas-coment"] = nova_curtida_coment($conexao, $id);//*certo
-    $noti["curtidas-publi"] = nova_Pcurtida($conexao, $id);
-    $noti["curtidas-Pcoment"] = nova_Pcurtida_coment($conexao, $id);
+        $noti["seguidores"] = novo_seguidor($conexao, $id); //*certo
+        $noti["livros-coment"] = novos_comentarios($conexao, $id); //*certo
+        $noti["coment-coment"] = novos_comentarios_coment($conexao, $id); //*certo
+        $noti["publi"] = novos_comentarios_publi($conexao, $id); //*certo
+        $noti["favoritos"] = novidade($conexao, $id); //*certo
+        $noti["curtidas-livro"] = nova_curtida($conexao, $id); //*certo
+        $noti["curtidas-coment"] = nova_curtida_coment($conexao, $id); //*certo
+        $noti["curtidas-publi"] = nova_Pcurtida($conexao, $id);
+        $noti["curtidas-Pcoment"] = nova_Pcurtida_coment($conexao, $id);
 
-    resposta(200, true, $noti);
+        resposta(200, true, $noti);
+    }
 }
 
 function novo_seguidor($conexao, $id)
@@ -49,7 +53,7 @@ function novo_seguidor($conexao, $id)
     return $segui;
 }
 function nova_curtida($conexao, $id)
-{   
+{
     $curtis = [];
 
     $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'livro' AND coment = 0");
@@ -72,7 +76,7 @@ function nova_curtida($conexao, $id)
 }
 
 function nova_curtida_coment($conexao, $id)
-{   
+{
     $curtis = [];
 
     $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'livro' AND coment != 0");
@@ -95,7 +99,7 @@ function nova_curtida_coment($conexao, $id)
 }
 
 function nova_Pcurtida($conexao, $id)
-{   
+{
     $curtis = [];
 
     $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'publi' AND coment = 0");
@@ -118,7 +122,7 @@ function nova_Pcurtida($conexao, $id)
 }
 
 function nova_Pcurtida_coment($conexao, $id)
-{   
+{
     $curtis = [];
 
     $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'publi' AND coment != 0");
@@ -137,7 +141,7 @@ function nova_Pcurtida_coment($conexao, $id)
         }
     }
 
-    
+
 
     return $curtis;
 }
@@ -172,7 +176,7 @@ function novos_comentarios_coment($conexao, $id)
     $coment->execute();
     $coment = $coment->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
 
     foreach ($coment as $key => $value) {
         $stmt = $conexao->prepare("SELECT id FROM comentarios WHERE (id = :id OR id = :id_r) AND user = :user_id");

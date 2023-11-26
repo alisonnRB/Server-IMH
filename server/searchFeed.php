@@ -23,6 +23,9 @@ if(!$token || $token == "erro"){
 function Busca_publi($id) {
     // Verificação da conexão
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
 
     $stm = $conexao->prepare('SELECT id_ref FROM seguidores WHERE user_id = :user_id');
     $stm->bindParam(':user_id', $id);
@@ -70,4 +73,5 @@ function Busca_publi($id) {
     }
 
     resposta(200, true, $resultados_finais);
+}
 }

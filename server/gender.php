@@ -21,6 +21,9 @@ if ($token == "erro") {
 function quaisGeneros($nomeColuna){
     try {
         $conexao = conecta_bd();
+        if (!$conexao) {
+            resposta(200, false, "Houve um problema ao conectar ao servidor");
+        } else {
 
         // Use uma declaração preparada para a coluna
         $stmt = $conexao->prepare("SELECT id, {$nomeColuna} FROM genero");
@@ -34,6 +37,7 @@ function quaisGeneros($nomeColuna){
         }
 
         resposta(200, true, $list);
+    }
     } catch (PDOException $e) {
         resposta(200, false, "Erro no servidor: " . $e->getMessage());
     }

@@ -75,9 +75,9 @@ function consulta($email, $senha){
             } else {
                 resposta(200, false, "Senha incorreta");
             }
-        } else {
-            resposta(200, false, "Email não registrado!");
-        }
+            } else {
+                resposta(200, false, "Email não registrado!");
+            }
     }
 }
 
