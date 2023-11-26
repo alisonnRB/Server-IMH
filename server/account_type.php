@@ -22,15 +22,16 @@ if (!$token || $token == "erro") {
 function tipo($id)
 {
     $conexao = conecta_bd();
-    //!! verify
-
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
     $stmt = $conexao->prepare("SELECT tipo FROM usuarios WHERE id = :id");
     $stmt->bindParam(":id", $id);
     $stmt->execute();
     $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
 
     resposta(200, true, $stmt['tipo']);
-
+    }
 }
 
 
