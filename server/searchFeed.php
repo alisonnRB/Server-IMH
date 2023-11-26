@@ -14,13 +14,14 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 
-if(!$token || $token == "erro"){
+if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
-}else{
+} else {
     Busca_publi($token->id);
 }
 
-function Busca_publi($id) {
+function Busca_publi($id)
+{
     // Verificação da conexão
     $conexao = conecta_bd();
 
@@ -28,6 +29,14 @@ function Busca_publi($id) {
     $stm->bindParam(':user_id', $id);
     $stm->execute();
     $segui = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$segui) {
+        $segui = array(
+            array(
+                "id_ref" => $id
+            )
+        );
+    }
 
     $resultados_finais = [];
 
