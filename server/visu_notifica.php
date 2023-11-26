@@ -22,6 +22,10 @@ if (!$token || $token == "erro") {
 function busca_noti($id)
 {
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
+    
     //!! verificar
     novo_seguidor($conexao, $id);
     nova_curtida($conexao, $id);
@@ -32,6 +36,8 @@ function busca_noti($id)
 
     resposta(200, true, 'certo');
 }
+}
+
 
 function novo_seguidor($conexao, $id)
 {

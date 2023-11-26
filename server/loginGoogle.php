@@ -26,21 +26,26 @@ function verifica($token)
     }
 
     $conexao = conecta_bd();
-
-    //? acessa o email do input
-    $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email AND tipo = 'google' ");
-    $consulta->execute([':email' => $decode->email]);
-
-
-    if ($consulta->rowCount() === 1) {
-        $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
-
-        $token = geraToken($usuario['id'], $usuario['email']);
-
-        resposta(200, true, $token);
-
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
-        resposta(200, false, "Email não registrado!");
+
+        //? acessa o email do input
+        $consulta = $conexao->prepare("SELECT * FROM usuarios WHERE email = :email AND tipo = 'google' ");
+        $consulta->execute([':email' => $decode->email]);
+
+
+        if ($consulta->rowCount() === 1) {
+            $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
+
+            $token = geraToken($usuario['id'], $usuario['email']);
+
+            resposta(200, true, $token);
+
+        } else {
+            resposta(200, false, "Email não registrado!");
+        }
     }
 
-} ?>
+}
+?>

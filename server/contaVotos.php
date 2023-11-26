@@ -15,6 +15,10 @@ conta_votos($body);
 
 function conta_votos($body){
     $conexao = conecta_bd();
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
+    
     
     $consulta = $conexao->prepare('SELECT chave FROM votacao WHERE id_ref = :id_ref');
     $consulta->bindParam(':id_ref', $body->id_ref);
@@ -50,6 +54,7 @@ function conta_votos($body){
     $stmt->bindParam(':votos', $list);
     $stmt->bindParam(':id', $body->id_ref, PDO::PARAM_INT);
     $stmt->execute();
+    }
 }
 
 

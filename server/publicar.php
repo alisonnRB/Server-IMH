@@ -3,6 +3,7 @@
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./token/decode_token.php";
+include "./validações/validacoes.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -15,23 +16,31 @@ $body = json_decode($body);
 
 $token = decode_token($body->id);
 
-if(!$token || $token == "erro"){
+if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
-}else{
-    qual($token->id, $body);   
+} else {
+    qual($token->id, $body);
 }
 
-function qual($id, $body){
+function qual($id, $body)
+{
     $conexao = conecta_bd();
-    //! VERFICAR conexão
-    if(!empty($body->texto)){
-        //! VERIFICAR  string
-        saveText($id,$body, $conexao);
+    if (!$conexao) {
+        resposta(200, false, "Houve um problema ao conectar ao servidor");
+    } else {
+
+        $texto = validar_string($body->texto);
+        if ($texto[0] == true) {
+            saveText($id, $body, $conexao);
+        } else {
+            resposta(200, false, $texto[1]);
+        }
     }
 }
 
 
-function saveText($id, $body, $conexao) {
+function saveText($id, $body, $conexao)
+{
     //! verificar da existencia de enquete valida
     //! verificar da existencia link livro valido
     $id_enquete = 0;
@@ -39,11 +48,11 @@ function saveText($id, $body, $conexao) {
     $stmt = $conexao->prepare('INSERT INTO feed_publi(user_id, texto, ref_livro, enquete, tempo) VALUES (:user_id, :texto, :ref_livro, :enquete, :tempo)');
     $stmt->bindParam(':texto', $body->texto);
     $stmt->bindParam(':user_id', $id);
-    if($body->livro != "" && $body->livro->id != 0){
-        $stmt->bindParam(':ref_livro', $body->livro->id);    
-    }else{
+    if ($body->livro != "" && $body->livro->id != 0) {
+        $stmt->bindParam(':ref_livro', $body->livro->id);
+    } else {
         $l = 0;
-        $stmt->bindParam(':ref_livro', $l); 
+        $stmt->bindParam(':ref_livro', $l);
     }
 
     for ($i = 0; $i < 3; $i++) {
@@ -54,15 +63,16 @@ function saveText($id, $body, $conexao) {
         }
     }
 
-    $stmt->bindParam(':enquete', $id_enquete); 
+    $stmt->bindParam(':enquete', $id_enquete);
     $data = date('Y-m-d H:i:s');
-    $stmt->bindParam(':tempo', $data); 
+    $stmt->bindParam(':tempo', $data);
     $stmt->execute();
 
     resposta(200, true, 'certo');
 }
 
-function salva_enquete($id, $body, $conexao){
+function salva_enquete($id, $body, $conexao)
+{
     //! verficar itens da enquete
     $enquete = json_encode($body->enquete);
     $stm = $conexao->prepare('INSERT INTO enquete(titulo, quest) VALUES (:titulo, :quest)');

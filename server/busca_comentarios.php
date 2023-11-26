@@ -15,7 +15,7 @@ $body = json_decode($body);
 busca_comentarios($body);
 
 //validar body->id
-$id = validar_int($body['id_ref']);
+$id = validar_int($body->id);
 if ($id[0] == true){
     $id = $id[1];
 } else {
@@ -24,7 +24,7 @@ resposta (200, false, $id[1]);
 
 
 //validar body->tipo 
-$tipo = validar_string($body['tipo']);
+$tipo = validar_string($body->tipo);
 if ($tipo[0] == true){
     $tipo = $tipo[1];
 } else {
