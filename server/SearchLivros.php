@@ -65,7 +65,7 @@ function quaisLivros($search, $params){
             resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
 
-        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search";
+        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search ORDER BY curtidas DESC, visus DESC";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
         $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);

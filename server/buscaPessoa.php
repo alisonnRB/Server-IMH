@@ -47,7 +47,7 @@ function Busca_usuarios ($body){
         
     
 
-        $sql = "SELECT id, nome, fotoPerfil, seguidores FROM usuarios WHERE $search";
+        $sql = "SELECT id, nome, fotoPerfil, seguidores FROM usuarios WHERE $search ORDER BY seguidores DESC";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

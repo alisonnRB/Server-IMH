@@ -17,10 +17,10 @@ $token = decode_token($body->id);
 if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
 } else {
-    Busca_publi($token->id);
+    Busca_publi($token->id, $body->indice);
 }
 
-function Busca_publi($id)
+function Busca_publi($id, $indice)
 {
     // Verificação da conexão
     $conexao = conecta_bd();
@@ -44,9 +44,11 @@ function Busca_publi($id)
     $resultados_finais = [];
 
     foreach ($segui as $seguidor) {
-        $stmt = $conexao->prepare('SELECT id, user_id, texto, ref_livro, enquete, tempo FROM feed_publi WHERE user_id = :user_id OR user_id = :id ORDER BY tempo DESC');
+        $indice = intval($indice);
+        $stmt = $conexao->prepare('SELECT id, user_id, texto, ref_livro, enquete, tempo FROM feed_publi WHERE user_id = :user_id OR user_id = :id ORDER BY tempo DESC, id DESC LIMIT 20 OFFSET :indice');
         $stmt->bindParam(':user_id', $seguidor['id_ref']);
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':indice', $indice, PDO::PARAM_INT);
         $stmt->execute();
         $Busca = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -80,6 +82,9 @@ function Busca_publi($id)
         // Adicione os resultados da consulta para um seguidor ao array final
         $resultados_finais = array_merge($resultados_finais, $Busca);
     }
+
+    sleep(8);
+
 
     resposta(200, true, $resultados_finais);
 }
