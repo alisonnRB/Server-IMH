@@ -7,17 +7,18 @@ include "./validações/validacoes.php";
 include "./token/decode_token.php";
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET');
+header('Access-Control-Allow-Methods: *');
 header('Access-Control-Allow-Headers: *');
 
 // TODO função que encerra as operações e envia uma resposta para a API trabalhar
-$token = decode_token($_POST["id"]);
+$token = isset($_POST["id"]) ? decode_token($_POST["id"]) : null;
 
-if(!$token || $token == "erro"){
-    resposta(200, false, "não autorizado");
-}else{
+if (!$token || $token == "erro") {
+    resposta(200, false, "Não autorizado");
+} else {
     oque_alterar($token->id);
 }
+
 
 
 function oque_alterar($id){

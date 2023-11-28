@@ -83,9 +83,6 @@ function Busca_publi($id, $indice)
         $resultados_finais = array_merge($resultados_finais, $Busca);
     }
 
-    sleep(8);
-
-
     resposta(200, true, $resultados_finais);
 }
 }
