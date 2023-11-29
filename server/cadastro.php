@@ -15,7 +15,7 @@ $body = json_decode($body);
 
 verificacao_de_dados($body);
 
-function verificacao_de_dados($body){ 
+function verificacao_de_dados($body){
     //! Verificar as entradas string, filtrar e etc (verificado)
     if (empty($body->nome) && empty($body->email) && empty($body->senha)){
         resposta(200, false, "Você deve preencher os campos");
@@ -96,6 +96,8 @@ function cadastrar($conexao, $nome, $email, $senha){
         if (!is_dir($destina . $nomeDaPasta)) {
             mkdir($destina . $nomeDaPasta);
         }
+
+        
         resposta(200,true,'msg salvA');  
     }catch(Exception $e){
         resposta(200, false, "algo deu errado");
