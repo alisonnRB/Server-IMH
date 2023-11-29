@@ -65,11 +65,16 @@ function quaisLivros($search, $params, $indice){
             resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
 
-        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search ORDER BY curtidas ASC, visus DESC LIMIT 12 OFFSET $indice";
+        $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search ORDER BY curtidas ASC, visus DESC LIMIT 18 OFFSET $indice";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
-        $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);sleep(5);
 
+        if($indice == 0 && !$livros){
+            resposta(200, true, "nao");
+        }else if($indice != 0 && !$livros){
+            resposta(200, true, "naoM");
+        }
         resposta(200, true, $livros);
     }} catch (Exception $e) {
         resposta(200, false, null);
