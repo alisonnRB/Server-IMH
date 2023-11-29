@@ -68,7 +68,7 @@ function quaisLivros($search, $params, $indice){
         $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search ORDER BY curtidas ASC, visus DESC LIMIT 18 OFFSET $indice";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
-        $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);sleep(5);
+        $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if($indice == 0 && !$livros){
             resposta(200, true, "nao");
