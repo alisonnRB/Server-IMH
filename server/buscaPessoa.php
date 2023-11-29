@@ -44,10 +44,10 @@ function Busca_usuarios ($body){
         }else{
             $search .= '1';
         }
-        
-    
 
-        $sql = "SELECT id, nome, fotoPerfil, seguidores FROM usuarios WHERE $search ORDER BY seguidores DESC";
+        $indice = $body->indice;
+
+        $sql = "SELECT id, nome, fotoPerfil, seguidores FROM usuarios WHERE $search ORDER BY seguidores DESC LIMIT 20 OFFSET $indice";
         $stmt = $conexao->prepare($sql);
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
