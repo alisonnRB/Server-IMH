@@ -13,7 +13,6 @@ header('Access-Control-Allow-Headers: *');
 
 function verifica($body){
     //! Verificar entrada string, filtrar e etc
-    sleep(5);
     //? verifica se estão vazios
     if (empty($body->email) && empty($body->senha)) {
         resposta(200, false, "Você deve preencher os campos");
