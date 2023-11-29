@@ -52,6 +52,12 @@ function Busca_usuarios ($body){
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if($indice == 0 && !$users){
+            resposta(200, true, "nao");
+        }else if($indice != 0 && !$users){
+            resposta(200, true, "naoM");
+        }
+
         resposta(200, true, $users);
     }
 }    
