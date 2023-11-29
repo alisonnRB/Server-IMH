@@ -38,7 +38,7 @@ function busca_comentarios($body){
     if (!$conexao) {
         resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
-        $stmt = $conexao->prepare("SELECT id, id_ref, user, texto, resposta, id_resposta, tempo, conversa, curtidas FROM comentarios WHERE id_ref = :id_ref AND tipo = :tipo");
+        $stmt = $conexao->prepare("SELECT id, id_ref, user, texto, resposta, id_resposta, tempo, conversa, curtidas FROM comentarios WHERE id_ref = :id_ref AND tipo = :tipo ORDER BY curtidas DESC, tempo DESC LIMIT 300");
         $stmt->execute([':id_ref' => $body->id, ':tipo' => $body->tipo]);
         $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
