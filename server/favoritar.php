@@ -34,7 +34,7 @@ function Favoritar($id_user, $id_ref){
             $stmt = $conexao->prepare('DELETE FROM favoritos WHERE user_id = :id_user AND id_livro = :id_ref');
             $stmt->execute([':id_user' => $id_user, ':id_ref' => $id_ref]);
         }else{
-            $stm = $conexao->prepare('INSERT INTO favoritos(user_id, id_livro) VALUES (:id_user, :id_ref)');
+            $stm = $conexao->prepare('INSERT INTO favoritos(user_id, id_livro, visu) VALUES (:id_user, :id_ref, 1)');
             $stm->bindParam(':id_user', $id_user);
             $stm->bindParam(':id_ref', $id_ref);
             $stm->execute();
