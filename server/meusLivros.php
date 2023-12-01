@@ -57,7 +57,7 @@ function other_livros($id, $indice)
         if (!$conexao) {
             resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
-            $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE user_id = :id ORDER BY curtidas ASC, visus DESC LIMIT 18 OFFSET :indice");
+            $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE user_id = :id AND publico = 1 ORDER BY curtidas ASC, visus DESC LIMIT 18 OFFSET :indice");
             $stmt->bindParam(":id", $id, PDO::PARAM_INT);
             $stmt->bindParam(":indice", $indice, PDO::PARAM_INT);
             $stmt->execute();
