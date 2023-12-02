@@ -29,13 +29,13 @@ function busca_noti($id)
 
         $noti = [];
 
-        $noti["seguidores"] = novo_seguidor($conexao, $id); //*certo
-        $noti["livros-coment"] = novos_comentarios($conexao, $id); //*certo
-        $noti["coment-coment"] = novos_comentarios_coment($conexao, $id); //*certo
-        $noti["publi"] = novos_comentarios_publi($conexao, $id); //*certo
-        $noti["favoritos"] = novidade($conexao, $id); //*certo
-        $noti["curtidas-livro"] = nova_curtida($conexao, $id); //*certo
-        $noti["curtidas-coment"] = nova_curtida_coment($conexao, $id); //*certo
+        $noti["seguidores"] = novo_seguidor($conexao, $id);
+        $noti["livros-coment"] = novos_comentarios($conexao, $id);
+        $noti["coment-coment"] = novos_comentarios_coment($conexao, $id);
+        $noti["publi"] = novos_comentarios_publi($conexao, $id);
+        $noti["favoritos"] = novidade($conexao, $id);
+        $noti["curtidas-livro"] = nova_curtida($conexao, $id);
+        $noti["curtidas-coment"] = nova_curtida_coment($conexao, $id);
         $noti["curtidas-publi"] = nova_Pcurtida($conexao, $id);
         $noti["curtidas-Pcoment"] = nova_Pcurtida_coment($conexao, $id);
 
@@ -56,7 +56,8 @@ function nova_curtida($conexao, $id)
 {
     $curtis = [];
 
-    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'livro' AND coment = 0");
+    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND id_user != :id_user AND tipo = 'livro' AND coment = 0");
+    $curti->bindParam(':id_user', $id);
     $curti->execute();
     $curti = $curti->fetchAll(PDO::FETCH_ASSOC);
 
@@ -79,7 +80,8 @@ function nova_curtida_coment($conexao, $id)
 {
     $curtis = [];
 
-    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'livro' AND coment != 0");
+    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND id_user != :id_user AND tipo = 'livro' AND coment != 0");
+    $curti->bindParam(':id_user', $id);
     $curti->execute();
     $curti = $curti->fetchAll(PDO::FETCH_ASSOC);
 
@@ -102,7 +104,8 @@ function nova_Pcurtida($conexao, $id)
 {
     $curtis = [];
 
-    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'publi' AND coment = 0");
+    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND id_user != :id_user AND tipo = 'publi' AND coment = 0");
+    $curti->bindParam(':id_user', $id);
     $curti->execute();
     $curti = $curti->fetchAll(PDO::FETCH_ASSOC);
 
@@ -125,7 +128,8 @@ function nova_Pcurtida_coment($conexao, $id)
 {
     $curtis = [];
 
-    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND tipo = 'publi' AND coment != 0");
+    $curti = $conexao->prepare("SELECT id, id_user, id_ref, tipo, coment FROM curtidas WHERE visu = 0 AND id_user != :id_user AND tipo = 'publi' AND coment != 0");
+    $curti->bindParam(':id_user', $id);
     $curti->execute();
     $curti = $curti->fetchAll(PDO::FETCH_ASSOC);
 
@@ -149,7 +153,8 @@ function novos_comentarios($conexao, $id)
 {
     $comenta = [];
 
-    $coment = $conexao->prepare("SELECT id, user, id_ref FROM comentarios WHERE visu = 0 AND resposta = 0 AND tipo = 'livro'");
+    $coment = $conexao->prepare("SELECT id, user, id_ref FROM comentarios WHERE visu = 0 AND user != :id_user AND resposta = 0 AND tipo = 'livro'");
+    $coment->bindParam(':id_user', $id);
     $coment->execute();
     $coment = $coment->fetchAll(PDO::FETCH_ASSOC);
 
@@ -172,7 +177,8 @@ function novos_comentarios_coment($conexao, $id)
 {
     $coments = [];
 
-    $coment = $conexao->prepare("SELECT id, user, id_ref, tipo, id_resposta, conversa FROM comentarios WHERE visu = 0 AND resposta != 0");
+    $coment = $conexao->prepare("SELECT id, user, id_ref, tipo, id_resposta, conversa FROM comentarios WHERE visu = 0 AND user != :id_user  AND resposta != 0");
+    $coment->bindParam(':id_user', $id);
     $coment->execute();
     $coment = $coment->fetchAll(PDO::FETCH_ASSOC);
 
@@ -198,7 +204,8 @@ function novos_comentarios_publi($conexao, $id)
 {
     $comenta = [];
 
-    $coment = $conexao->prepare("SELECT id, user, id_ref FROM comentarios WHERE visu = 0 AND resposta = 0 AND tipo = 'publi'");
+    $coment = $conexao->prepare("SELECT id, user, id_ref FROM comentarios WHERE visu = 0 AND user != :id_user AND resposta = 0 AND tipo = 'publi'");
+    $coment->bindParam(':id_user', $id);
     $coment->execute();
     $coment = $coment->fetchAll(PDO::FETCH_ASSOC);
 
