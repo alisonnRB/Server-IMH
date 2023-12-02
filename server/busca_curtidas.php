@@ -12,12 +12,11 @@ header('Access-Control-Allow-Methods: POST');
 $body = file_get_contents('php://input');
 $body = json_decode($body);
 
-
 $token = decode_token($body->id);
 if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
 } else {
-    busca_curtidas($id_ref, $tipo);
+    busca_curtidas($body->id_ref, $body->tipo);
 }
 
 function busca_curtidas($id, $tipo)
