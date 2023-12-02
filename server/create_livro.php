@@ -22,22 +22,20 @@ function oqueAlterar($id)
     //! Verificar entrada string, filtrar e etc
     $nome = false;
     $foto = false;
-    $selecao = false;
+    $selecao = false; 
 
 
     //TODO verifica se o id veio
     if (isset($id) || !empty($id)) {
-
-
         //TODO verfica se há nome para alterar
         if (isset($_POST['nome']) && !empty($_POST['nome'])) {
-            $nome = true;
             $nome = validar_nome($_POST['nome']);
             if ($nome[0] == true) {
-                $nome = $nome[1];
+                $nome = true;
             } else {
                 resposta(200, false, $nome[1]);
             }
+
 
             if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])) {
                 $img = validar_img($_FILES);
@@ -52,7 +50,7 @@ function oqueAlterar($id)
                 $selecao = true;
             }
         } else {
-            resposta(200, true, 'um livro precisa de um nome');
+            resposta(200, false, 'um livro precisa de um nome');
         }
         controla($nome, $foto, $selecao, $id);
     } else {
@@ -105,8 +103,6 @@ function controla($nome, $foto, $selecao, $id)
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
-        $arquivoTemporario = $_FILES['image']['tmp_name'];
-
         $nomeUnico = $id . '_' . time() . '.' . $extensao;
 
         salvaFoto($conexao, $nomeUnico, $consulta, $destino);
@@ -116,7 +112,7 @@ function controla($nome, $foto, $selecao, $id)
     }
     salvaFim($conexao, $consulta);
 
-    resposta(200, true, "Dados atualizados com sucesso.");
+    resposta(200, true, $consulta);
 }
 
 function salvaFoto($conexao, $nomeUnico, $consulta, $destino)
