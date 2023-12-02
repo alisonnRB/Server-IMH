@@ -1,4 +1,3 @@
-
 <?php
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
@@ -12,54 +11,58 @@ header('Access-Control-Allow-Headers: *');
 
 
 $token = decode_token($_POST['id']);
-if(!$token || $token == "erro"){
+if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
-}else{
+} else {
     oqueAlterar($token->id);
 }
 
-function oqueAlterar($id){
+function oqueAlterar($id)
+{
     //! Verificar entrada string, filtrar e etc
     $nome = false;
-    $foto =  false;
+    $foto = false;
     $selecao = false;
 
+
     //TODO verifica se o id veio
-    if (isset($id) || !empty($id)){
-        
+    if (isset($id) || !empty($id)) {
+
+
         //TODO verfica se há nome para alterar
-        if(isset($_POST['nome']) && !empty($_POST['nome'])){
+        if (isset($_POST['nome']) && !empty($_POST['nome'])) {
             $nome = true;
-        }
-        $nome = validar_nome($nome);
-        if ($nome[0] == true){
-            $nome = $nome[1];
+            $nome = validar_nome($_POST['nome']);
+            if ($nome[0] == true) {
+                $nome = $nome[1];
+            } else {
+                resposta(200, false, $nome[1]);
+            }
+
+            if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])) {
+                $img = validar_img($_FILES);
+                if ($img[0]) {
+                    $foto = true;
+                } else {
+                    resposta(200, false, $img[1]);
+                }
+            }
+
+            if (!empty($_POST['selecao']) && isset($_POST['selecao'])) {
+                $selecao = true;
+            }
         } else {
-            resposta(200, false, $nome[1]);
+            resposta(200, true, 'um livro precisa de um nome');
         }
-
-        if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])){
-            $foto = true; 
-                 $img = validar_img($_FILES);
-        if($img[0]){
-            $foto = true;
-        }else{
-            resposta(200, false, $img[1]);
-        }       
-        }
-
-  
-        if (!empty($_POST['selecao']) && isset($_POST['selecao'])){
-            $selecao = true;
-        }
-        controla($nome, $foto, $selecao, $id);  
-    }else{
+        controla($nome, $foto, $selecao, $id);
+    } else {
         resposta(200, false, "há algo errado, tente movamente mais tarde :(");
     }
 }
-function controla($nome, $foto, $selecao, $id){
+function controla($nome, $foto, $selecao, $id)
+{
     $okFoto = false;
- 
+
     //? cria a conexão
     $conexao = conecta_bd();
     if (!$conexao) {
@@ -73,32 +76,32 @@ function controla($nome, $foto, $selecao, $id){
         $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
         $consulta->execute([':user_id' => $id]);
         $consulta = $consulta->fetchColumn();
-    
-        $destino = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $consulta . '/'; 
-    }
-    
 
-    if(!empty($_POST['classificacao'])){
+        $destino = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $consulta . '/';
+    }
+
+
+    if (!empty($_POST['classificacao'])) {
         salvaClasse($conexao, $consulta);
     }
 
-    if($nome == true){
+    if ($nome == true) {
         salvaNome($conexao, $consulta);
         if (!is_dir($destino)) {
             mkdir($destino, 0777, true);
         }
-    }  
+    }
 
-    if($foto == true){
+    if ($foto == true) {
         $Img = validar_img($_FILES);
-        if($Img[0]){
+        if ($Img[0]) {
             $okFoto = true;
-        }else{
+        } else {
             resposta(200, false, $Img[1]);
         }
     }
 
-    if($foto == true && $okFoto == true){
+    if ($foto == true && $okFoto == true) {
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
@@ -108,7 +111,7 @@ function controla($nome, $foto, $selecao, $id){
 
         salvaFoto($conexao, $nomeUnico, $consulta, $destino);
     }
-    if($selecao == true){
+    if ($selecao == true) {
         salaGen($conexao, $consulta);
     }
     salvaFim($conexao, $consulta);
@@ -116,11 +119,12 @@ function controla($nome, $foto, $selecao, $id){
     resposta(200, true, "Dados atualizados com sucesso.");
 }
 
-function salvaFoto($conexao, $nomeUnico, $consulta, $destino){ 
+function salvaFoto($conexao, $nomeUnico, $consulta, $destino)
+{
 
     $arquivoTemporario = $_FILES['image']['tmp_name'];
 
-    if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)){
+    if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)) {
         $stm = $conexao->prepare('UPDATE livro_publi SET imagem = :imagem WHERE id = :id');
         $stm->bindParam(':imagem', $nomeUnico);
         $stm->bindParam(':id', $consulta);
@@ -130,39 +134,43 @@ function salvaFoto($conexao, $nomeUnico, $consulta, $destino){
     }
 }
 
-function salvaNome($conexao, $consulta){
+function salvaNome($conexao, $consulta)
+{
     $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
     $stm->bindParam(':nome', $_POST['nome']);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
 
-function salvaClasse($conexao, $consulta){
+function salvaClasse($conexao, $consulta)
+{
     $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
     $stm->bindParam(':classificacao', $consulta);
     $stm->bindParam(':id', $consulta);
     $stm->execute();
 }
 
-function salaGen($conexao, $consulta){
-        $lista = array();
+function salaGen($conexao, $consulta)
+{
+    $lista = array();
 
-        $selecao = json_decode($_POST['selecao']);
-        
-        foreach ($selecao as $chave => $valor) {
-            if ($valor == true) {
-                $lista[] = $chave;
-            }
+    $selecao = json_decode($_POST['selecao']);
+
+    foreach ($selecao as $chave => $valor) {
+        if ($valor == true) {
+            $lista[] = $chave;
         }
-        
-        $lista = json_encode($lista);
-        
-        $stmt = $conexao->prepare('UPDATE livro_publi SET genero = ? WHERE id = ?');
-        $stmt->execute([$lista, $consulta]);
+    }
+
+    $lista = json_encode($lista);
+
+    $stmt = $conexao->prepare('UPDATE livro_publi SET genero = ? WHERE id = ?');
+    $stmt->execute([$lista, $consulta]);
 
 }
 
-function salvaFim($conexao, $consulta){
+function salvaFim($conexao, $consulta)
+{
     $a = array();
     $a = json_encode($a);
     $data = date('Y-m-d H:i:s');
