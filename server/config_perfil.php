@@ -58,7 +58,7 @@ function controla($nome, $foto, $id, $idioma){
     $okNome = false;
 
     if($nome){
-        $Nome = validar_nome($_POST['nome'], "nome");
+        $Nome = validar_nome($_POST['nome']);
         if($Nome[0]){
             $okNome = true;
         }else{
