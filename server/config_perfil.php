@@ -57,10 +57,11 @@ function controla($nome, $foto, $id, $idioma){
     $okFoto = false;
     $okNome = false;
 
+   
     if($nome){
         $Nome = validar_nome($_POST['nome']);
         if($Nome[0]){
-            $okNome = true;
+            $okNome = true; 
         }else{
             resposta(200, false, $Nome[1]);
         }
@@ -91,16 +92,15 @@ function controla($nome, $foto, $id, $idioma){
     if(!$conexao){
         resposta(200, false, "algo errado no server");
     }else{
-        if($foto == true && $okFoto == true){
+        if($foto && $okFoto){
 
         $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $arquivoTemporario = $_FILES['image']['tmp_name'];
         $nomeUnico = $id . '_' . time() . '.' . $extensao;
 
         salvaFoto($conexao, $nomeUnico, $id);
         }
 
-    if($nome == true && $okNome == true){
+    if($nome && $okNome){
         
         salvaNome($conexao, $Nome[0], $id);
     }

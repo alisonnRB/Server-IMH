@@ -7,17 +7,14 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 
-$body = file_get_contents('php://input');
-$body = json_decode($body);
-
-$token = decode_token($body->id);
+$token = decode_token($_GET['id']);
 if (!$token || $token == "erro") {
     resposta(200, false, "não autorizado");
 } else {
-    info_livro($body);
+    info_livro($_GET['idLivro']);
 }
 
-function info_livro($body)
+function info_livro($id)
 {
     try {
         $conexao = conecta_bd();
@@ -26,7 +23,7 @@ function info_livro($body)
         } else {
 
             $stmt = $conexao->prepare("SELECT id, user_id, nome, imagem, genero, texto, sinopse, classificacao, pronto, publico, finalizado, tema, tags, curtidas, favoritos, visus FROM livro_publi WHERE id = :id");
-            $stmt->execute([':id' => $body->idLivro]);
+            $stmt->execute([':id' => $id]);
             $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
 
             resposta(200, true, $stmt);
