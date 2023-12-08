@@ -29,7 +29,7 @@ function qual($id, $body)
         resposta(200, false, "Houve um problema ao conectar ao servidor");
     } else {
 
-        $texto = validar_string($body->texto);
+        $texto = strip_tags($body->texto);
         if ($texto[0] == true) {
             saveText($id, $body, $conexao);
         } else {
