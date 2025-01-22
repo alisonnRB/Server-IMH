@@ -13,16 +13,17 @@ function conecta_bd()
         $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
         $conexao = new PDO($dsn, $user, $password);
         $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Habilita exceções
-        return $conexao;
+        return $conexao;  // Retorna a conexão PDO
     } catch (PDOException $e) {
         // Exibe o erro detalhado no log para debug
-        echo error_log("Erro ao conectar ao banco de dados: " . $e->getMessage());
-
+        error_log("Erro ao conectar ao banco de dados: " . $e->getMessage());
+        echo "erro" . $e->getMessage();
         return [
             "ok" => false,
             "informacoes" => "Erro ao conectar ao banco de dados: " . $e->getMessage()
         ];
     }
 }
+
 
 ?>
