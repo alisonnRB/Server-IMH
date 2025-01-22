@@ -34,8 +34,9 @@ RUN chown -R www-data:www-data /var/www/html
 # Instalar as dependências do Composer sem incluir dependências de desenvolvimento e otimizando o autoloader
 RUN composer install --no-dev --optimize-autoloader -vvv || echo "Composer install failed"
 
+
 # Expor a porta 80
 EXPOSE 80
 
-# Rodar o Apache em segundo plano
-CMD ["apache2-foreground"]
+CMD composer install && ["apache2-foreground"]
+

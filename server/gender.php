@@ -1,5 +1,4 @@
 <?php
-echo ("<h1> oi </h1>");
 include "./conexão/conexao.php";
 include "./resposta/resposta.php";
 include "./token/decode_token.php";
