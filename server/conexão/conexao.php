@@ -1,7 +1,7 @@
 <?php
 function conecta_bd()
 {
-    echo (getenv('DB_HOST'));
+    echo ("host: " . getenv('DB_HOST'));
     echo getenv('DB_PORT');
     echo getenv('DB_NAME');
     echo getenv('DB_USER');
