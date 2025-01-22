@@ -1,29 +1,26 @@
-# Use a imagem base do PHP com Apache
 FROM php:8.2-apache
 
-# Instale extensões necessárias e outras dependências
+# Instale dependências do sistema
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
-    libpq-dev && \
-    docker-php-ext-install pdo_pgsql && \
-    a2enmod rewrite
+    libpq-dev \
+    && docker-php-ext-install pdo_pgsql
 
-# Instale o Composer globalmente
+# Instale o Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Copie os arquivos do projeto
-COPY . /var/www/html
-
-# Instale as dependências do Composer
+# Defina o diretório de trabalho
 WORKDIR /var/www/html
-RUN composer install --no-dev --optimize-autoloader
+
+# Copie os arquivos do projeto
+COPY . .
 
 # Defina permissões corretas
 RUN chown -R www-data:www-data /var/www/html
 
-# Exponha a porta do Apache
-EXPOSE 80
+# Limpe o cache do Composer
+RUN composer clear-cache
 
-# Comando padrão para iniciar o servidor
-CMD ["apache2-foreground"]
+# Instale as dependências com debug ativado
+RUN composer install --no-dev --optimize-autoloader -vvv
