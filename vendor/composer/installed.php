@@ -3,11 +3,11 @@
         'name' => 'meuprojeto/websocket-api',
         'pretty_version' => 'dev-server',
         'version' => 'dev-server',
-        'reference' => '01b0eb67c7359a00aab8d25a3946c59a4f94dcdc',
+        'reference' => '4dc4df77893c0c38ec4dbabe78864019f6ea26f5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'cboden/ratchet' => array(
@@ -58,7 +58,7 @@
         'meuprojeto/websocket-api' => array(
             'pretty_version' => 'dev-server',
             'version' => 'dev-server',
-            'reference' => '01b0eb67c7359a00aab8d25a3946c59a4f94dcdc',
+            'reference' => '4dc4df77893c0c38ec4dbabe78864019f6ea26f5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -149,9 +149,9 @@
             'dev_requirement' => false,
         ),
         'react/promise' => array(
-            'pretty_version' => 'v3.2.0',
-            'version' => '3.2.0.0',
-            'reference' => '8a164643313c71354582dc850b42b33fa12a4b63',
+            'pretty_version' => 'v2.11.0',
+            'version' => '2.11.0.0',
+            'reference' => '1a8460931ea36dc5c76838fec5734d55c88c6831',
             'type' => 'library',
             'install_path' => __DIR__ . '/../react/promise',
             'aliases' => array(),
