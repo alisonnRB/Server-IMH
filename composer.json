@@ -1,7 +1,9 @@
 {
-
+    "name": "meuprojeto/websocket-api",
+    "description": "Uma API WebSocket com autenticação JWT usando PHP.",
+    "license": "proprietary",
     "autoload": {
-        "psr-4":{
+        "psr-4": {
             "Api\\WebSocket\\": "src/"
         }
     },
@@ -9,5 +11,10 @@
         "firebase/php-jwt": "^6.9",
         "vlucas/phpdotenv": "^5.5",
         "cboden/ratchet": "^0.4.4"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "echo 'Dependências instaladas com sucesso!'"
+        ]
     }
 }
