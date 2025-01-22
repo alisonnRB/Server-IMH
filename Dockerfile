@@ -31,12 +31,14 @@ COPY . /var/www/html/
 # Garantir as permissões corretas para o Apache
 RUN chown -R www-data:www-data /var/www/html
 
-# Instalar as dependências do Composer sem incluir dependências de desenvolvimento e otimizando o autoloader
-RUN composer install --no-dev --optimize-autoloader -vvv || echo "Composer install failed"
+# Copiar o script de entrada para o contêiner
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
+# Dar permissão de execução ao script
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expor a porta 80
 EXPOSE 80
 
-CMD ["apache2-foreground"] && composer install --no-dev --optimize-autoloader -vvv 
-
+# Usar o script de entrada
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
