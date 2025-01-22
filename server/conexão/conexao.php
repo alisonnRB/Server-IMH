@@ -1,7 +1,7 @@
 <?php
 function conecta_bd()
 {
-    // Obtendo os dados de conexão das variáveis de ambiente
+    // Dados de conexão
     $host = 'dpg-cu8kbdaj1k6c73a002og-a';
     $port = '5432';
     $dbname = 'ihm_database';
@@ -15,9 +15,14 @@ function conecta_bd()
         $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Habilita exceções
         return $conexao;
     } catch (PDOException $e) {
-        // Exibe o erro no log para debug (opcional)
-        error_log("Erro ao conectar ao banco de dados: " . $e->getMessage());
-        return false;
+        // Exibe o erro detalhado no log para debug
+        echo error_log("Erro ao conectar ao banco de dados: " . $e->getMessage());
+
+        return [
+            "ok" => false,
+            "informacoes" => "Erro ao conectar ao banco de dados: " . $e->getMessage()
+        ];
     }
 }
+
 ?>
