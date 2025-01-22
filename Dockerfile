@@ -1,6 +1,9 @@
 # Usar a imagem base do PHP com Apache
 FROM php:8.0-apache
 
+# Habilitar o módulo mod_rewrite
+RUN a2enmod rewrite
+
 # Habilitar módulos necessários
 RUN apt-get update && apt-get install -y \
     libpng-dev \
