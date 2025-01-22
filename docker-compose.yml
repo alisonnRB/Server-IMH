@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80" # Porta da aplicação
+    depends_on:
+      - db # Garante que o banco inicie antes da aplicação
+    environment:
+      - DB_HOST=dpg-cu8kbdaj1k6c73a002og-a
+      - DB_PORT=5432
+      - DB_NAME=ihm_database
+      - DB_USER=ihm_database_user
+      - DB_PASSWORD=6VH0P3ugUBq22ReQZMGWv1Fxk8pMufEj
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: minha_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha123
+    ports:
+      - "5432:5432"
