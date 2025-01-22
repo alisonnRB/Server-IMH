@@ -1,12 +1,15 @@
 <?php
+require_once 'vendor/autoload.php'; // Certifique-se de incluir o autoload do Composer
+
+use Dotenv\Dotenv;
+
+// Carregar as variáveis de ambiente do arquivo .env
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 function conecta_bd()
 {
-    echo ("host: " . getenv('DB_HOST'));
-    echo getenv('DB_PORT');
-    echo getenv('DB_NAME');
-    echo getenv('DB_USER');
-    echo getenv('DB_PASSWORD');
-
+    echo "host" . getenv('DB_HOST');
     // Obtendo os dados de conexão das variáveis de ambiente
     $host = getenv('DB_HOST') ?: 'dpg-cu8kbdaj1k6c73a002og-a';
     $port = getenv('DB_PORT') ?: '5432';
