@@ -38,5 +38,5 @@ RUN composer install --no-dev --optimize-autoloader -vvv || echo "Composer insta
 # Expor a porta 80
 EXPOSE 80
 
-CMD composer install && ["apache2-foreground"]
+CMD composer install --no-dev --optimize-autoloader -vvv  && ["apache2-foreground"]
 
