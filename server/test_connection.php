@@ -1,5 +1,5 @@
 <?php
-require 'conecta_bd.php';
+require_once './conexão/conecta_bd.php';
 
 $conexao = conecta_bd();
 if (isset($conexao['ok']) && !$conexao['ok']) {
