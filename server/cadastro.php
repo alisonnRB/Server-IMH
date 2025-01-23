@@ -100,9 +100,9 @@ function cadastrar($conexao, $nome, $email, $senha)
         }
 
 
-        resposta(200, true, 'msg salvA');
+        resposta(200, true, 'cadastro realizado');
     } catch (Exception $e) {
-        resposta(200, false, "Erro: " . $e->getMessage());
+        resposta(200, false, "algo deu errado");
     }
 }
 ?>
