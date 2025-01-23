@@ -16,8 +16,6 @@ $auth = $_SERVER['HTTP_AUTHORIZATION'];
 
 $token = str_replace('Bearer ', '', $auth);
 
-echo $_ENV["KEY"];
-
 try {
     $decoded = JWT::decode($token, new Key($_ENV["KEY"], 'HS256'));
     resposta(200, true, "autenticado");
