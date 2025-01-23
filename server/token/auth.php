@@ -2,8 +2,6 @@
 include "../resposta/resposta.php";
 include "../../vendor/autoload.php";
 
-echo "oi trouxa";
-
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
@@ -19,20 +17,25 @@ $auth = $_SERVER['HTTP_AUTHORIZATION'];
 
 $token = str_replace('Bearer ', '', $auth);
 
-echo $token;
+
 
 try {
     $decoded = JWT::decode($token, new Key($_SERVER['KEY'], 'HS256'));
     resposta(200, true, "autenticado");
+    return;
 } catch (ExpiredException $e) {
     resposta(200, false, 'Token expirado');
+    return;
 } catch (BeforeValidException $e) {
     resposta(200, false, 'Token ainda não é válido');
+    return;
 } catch (SignatureInvalidException $e) {
     resposta(200, false, 'Token inválido - Assinatura inválida');
+    return;
 } catch (Throwable $e) {
     if ($e->getMessage() == 'Expired token') {
         resposta(200, false, 'token Expirado');
+        return;
     }
 }
 
