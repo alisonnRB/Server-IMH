@@ -1,5 +1,5 @@
 <?php
-include_once './conexão/conecta_bd.php';
+include "./conexão/conexao.php";
 
 $conexao = conecta_bd();
 if (isset($conexao['ok']) && !$conexao['ok']) {
