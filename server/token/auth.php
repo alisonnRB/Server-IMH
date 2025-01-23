@@ -37,6 +37,8 @@ try {
         resposta(200, false, 'token Expirado');
         return;
     }
+} catch (Exception $e) {
+    resposta(200, false, 'token Expirado ' . $e);
 }
 
 
