@@ -14,7 +14,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization, x-xsrf-token,
 
 $auth = $_SERVER['HTTP_AUTHORIZATION'];
 
-
+echo $_SERVER['HTTP_AUTHORIZATION'];
 $token = str_replace('Bearer ', '', $auth);
 
 
@@ -37,8 +37,6 @@ try {
         resposta(200, false, 'token Expirado');
         return;
     }
-} catch (Exception $e) {
-    resposta(200, false, 'token Expirado ' . $e);
 }
 
 
