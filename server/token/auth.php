@@ -16,12 +16,9 @@ $auth = $_SERVER['HTTP_AUTHORIZATION'];
 
 $token = str_replace('Bearer ', '', $auth);
 
-echo $token;
-
 try {
-    echo "entrou";
     $decoded = JWT::decode($token, new Key($_SERVER['KEY'], 'HS256'));
-    echo $decoded;
+    echo $_SERVER['KEY'];
     resposta(200, true, "autenticado");
     return;
 } catch (ExpiredException $e) {
