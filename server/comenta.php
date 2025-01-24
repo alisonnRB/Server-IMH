@@ -83,7 +83,7 @@ function comentar($id_user, $body)
 
         //resposta(200, true, $conversa);
 
-        $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
+        $stm = $conexao->prepare('INSERT INTO comentarios("user", tipo, id_ref, texto, resposta, id_resposta, tempo, conversa) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
         $stm->bindParam(':user', $id_user);
         $stm->bindParam(':tipo', $tipo);
         $stm->bindParam(':id_ref', $idref);
