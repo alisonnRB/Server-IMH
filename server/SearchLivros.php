@@ -28,8 +28,9 @@ function criaPesquisa($body)
     }
 
     if (!empty($body->Finalizado)) {
+        // Aqui, agora estamos passando o valor booleano diretamente
         $search .= ' AND finalizado = :finalizado';
-        $params[':finalizado'] = $body->Finalizado ? 1 : 0;
+        $params[':finalizado'] = $body->Finalizado ? true : false;
     }
 
     if (!empty($body->selecao)) {
@@ -60,6 +61,7 @@ function criaPesquisa($body)
 
     quaisLivros($search, $params, $body->indice);
 }
+
 
 function quaisLivros($search, $params, $indice)
 {
