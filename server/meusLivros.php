@@ -40,7 +40,7 @@ function meus_livros($id, $indice)
             $stmt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (!$stmt) {
-                resposta(200, true, 'nao');
+                resposta(200, true, '');
             }
 
             resposta(200, true, $stmt);
