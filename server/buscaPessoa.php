@@ -43,7 +43,7 @@ function Busca_usuarios($body)
             }
 
         } else {
-            $search .= True;
+            $search .= '1 = 1';
         }
 
         $indice = $body->indice;
