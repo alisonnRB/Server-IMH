@@ -28,7 +28,7 @@ function criaPesquisa($body)
     }
 
     if (!empty($body->Finalizado)) {
-        // Aqui, agora estamos passando o valor booleano diretamente
+        // Certifique-se de que estamos passando um valor booleano (true ou false)
         $search .= ' AND finalizado = :finalizado';
         $params[':finalizado'] = $body->Finalizado ? true : false;
     }
