@@ -48,7 +48,7 @@ function saveText($id, $body, $conexao)
     $stmt = $conexao->prepare('INSERT INTO feed_publi(user_id, texto, ref_livro, enquete, tempo) VALUES (:user_id, :texto, :ref_livro, :enquete, :tempo)');
     $stmt->bindParam(':texto', $body->texto);
     $stmt->bindParam(':user_id', $id);
-    if ($body->livro != "" && $body->livro->id != 0) {
+    if (isset($body->livro) && is_object($body->livro) && isset($body->livro->id) && $body->livro->id != 0) {
         $stmt->bindParam(':ref_livro', $body->livro->id);
     } else {
         $l = 0;
