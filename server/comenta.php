@@ -15,7 +15,7 @@ $body = file_get_contents('php://input');
 $body = json_decode($body);
 
 $token = decode_token($body->id_user);
-if  (!$token || $token == "erro")  {
+if (!$token || $token == "erro") {
     resposta(200, true, "não autorizado");
 } else {
     comentar($token->id, $body);
@@ -53,9 +53,9 @@ function comentar($id_user, $body)
 
         //*texto do comentário
         $texto = strip_tags($body->texto);
-        if (empty($texto)){
+        if (empty($texto)) {
             resposta(200, false, "campo vazio");
-        } 
+        }
 
         //*respostas 
         if ($resposta == 1) {
@@ -66,7 +66,7 @@ function comentar($id_user, $body)
             } else if ($idresp[0] == false) {
                 $idresp = $idresp[1];
             }
-            
+
             //*conversa é o id do comentário ao qual as respostas estão
             $conversa = validar_int($body->conversa);
             if ($conversa[0] == true) {
@@ -83,7 +83,7 @@ function comentar($id_user, $body)
 
         //resposta(200, true, $conversa);
 
-        $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa ) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
+        $stm = $conexao->prepare('INSERT INTO comentarios(user, tipo, id_ref, texto, resposta, id_resposta, tempo, conversa) VALUES (:user, :tipo, :id_ref, :texto, :resposta, :id_resposta, :tempo, :conversa)');
         $stm->bindParam(':user', $id_user);
         $stm->bindParam(':tipo', $tipo);
         $stm->bindParam(':id_ref', $idref);
@@ -93,9 +93,13 @@ function comentar($id_user, $body)
         $stm->bindParam(':tempo', $data);
         $stm->bindParam(':conversa', $conversa);
 
-        $stm->execute();
+        if ($stm->execute()) {
+            resposta(200, true, "Deu certo");
+        } else {
+            $errorInfo = $stm->errorInfo();
+            resposta(200, false, "Erro no banco de dados: " . $errorInfo[2]);
+        }
 
-        resposta(200, true, "Deu certo");
     }
 
 }
