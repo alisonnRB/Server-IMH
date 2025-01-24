@@ -28,14 +28,12 @@ function criaPesquisa($body)
     }
 
     if (!empty($body->Finalizado)) {
-        // Certifique-se de que estamos passando um valor booleano (true ou false)
         $search .= ' AND finalizado = :finalizado';
-        $params[':finalizado'] = $body->Finalizado ? true : false;
+        $params[':finalizado'] = $body->Finalizado ? 1 : 0;
     }
-
     if (!empty($body->selecao)) {
-        // Verificando o índice de gênero selecionado
         $generoSelecionado = null;
+
         foreach ($body->selecao as $index => $valor) {
             if ($valor == true) {
                 $generoSelecionado = $index;
@@ -46,10 +44,9 @@ function criaPesquisa($body)
         if (!is_null($generoSelecionado)) {
             // Verifica se o índice selecionado está presente na lista de gêneros
             $search .= " AND JSON_CONTAINS(genero, :generoSelecionado)";
-            $params[':generoSelecionado'] = json_encode([$generoSelecionado]); // Passa como um array dentro de um objeto JSON
+            $params[':generoSelecionado'] = json_encode($generoSelecionado);
         }
     }
-
     if (!empty($body->Novo)) {
         $search .= " AND DATEDIFF(NOW(), tempo) <= 7";
     }
@@ -62,7 +59,6 @@ function criaPesquisa($body)
     quaisLivros($search, $params, $body->indice);
 }
 
-
 function quaisLivros($search, $params, $indice)
 {
     try {
@@ -70,33 +66,23 @@ function quaisLivros($search, $params, $indice)
         if (!$conexao) {
             resposta(200, false, "Houve um problema ao conectar ao servidor");
         } else {
-            // Ajustando a consulta para garantir que os parâmetros sejam passados corretamente
-            $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus 
-                    FROM livro_publi 
-                    WHERE $search 
-                    ORDER BY curtidas DESC, visus DESC 
-                    LIMIT 18 OFFSET :indice"; // Adicionando o parâmetro de offset com segurança
-            $stmt = $conexao->prepare($sql);
-            $params[':indice'] = $indice; // Atribuindo o índice à consulta
 
+            $sql = "SELECT id, user_id, nome, imagem, genero, sinopse, classificacao, curtidas, favoritos, visus FROM livro_publi WHERE $search ORDER BY curtidas DESC, visus DESC LIMIT 18 OFFSET $indice";
+            $stmt = $conexao->prepare($sql);
             $stmt->execute($params);
             $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (empty($livros)) {
-                if ($indice == 0) {
-                    resposta(200, true, "nao");
-                } else {
-                    resposta(200, true, "naoM");
-                }
-            } else {
-                resposta(200, true, $livros);
+            if ($indice == 0 && !$livros) {
+                resposta(200, true, "nao");
+            } else if ($indice != 0 && !$livros) {
+                resposta(200, true, "naoM");
             }
+            resposta(200, true, $livros);
         }
     } catch (Exception $e) {
-        resposta(200, false, "Erro: " . $e->getMessage());
+        resposta(200, false, null);
     }
 }
-
 
 criaPesquisa($body);
 ?>
