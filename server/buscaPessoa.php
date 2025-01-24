@@ -18,7 +18,8 @@ $body = json_decode($body);
 Busca_usuarios($body);
 
 
-function Busca_usuarios ($body){
+function Busca_usuarios($body)
+{
     //! Verificar entrada string, filtrar e etc
     $conexao = conecta_bd();
 
@@ -32,17 +33,17 @@ function Busca_usuarios ($body){
         if ($body->nome != '') {
             $search .= 'nome LIKE :nome';
             $params[':nome'] = '%' . $body->nome . '%';
-            
+
             //validação do body->nome
             $nome = validar_nome($body->nome);
-            if ($nome[0] == true){
+            if ($nome[0] == true) {
                 $nome = $nome[1];
             } else {
                 resposta(200, false, $nome[1]);
             }
-            
-        }else{
-            $search .= '1';
+
+        } else {
+            $search .= True;
         }
 
         $indice = $body->indice;
@@ -52,13 +53,13 @@ function Busca_usuarios ($body){
         $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if($indice == 0 && !$users){
+        if ($indice == 0 && !$users) {
             resposta(200, true, "nao");
-        }else if($indice != 0 && !$users){
+        } else if ($indice != 0 && !$users) {
             resposta(200, true, "naoM");
         }
 
         resposta(200, true, $users);
     }
-}    
+}
 ?>

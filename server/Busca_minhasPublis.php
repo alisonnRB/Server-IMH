@@ -19,7 +19,7 @@ if (!$token || $token == "erro") {
 } else {
     if ($body->id_ref == "i") {
         Busca_publi($token->id, $body->indice);
-    }else{
+    } else {
         Busca_publi_other($body->id_ref, $body->indice);
     }
 
