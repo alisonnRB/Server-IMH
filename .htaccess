@@ -8,3 +8,16 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /index.php [QSA,L]
+
+<VirtualHost *:80>
+    ServerName yourdomain.com
+
+    # Ativar o módulo mod_proxy e mod_proxy_wstunnel
+    LoadModule proxy_module modules/mod_proxy.so
+    LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
+
+    ProxyPass /ws/ ws://127.0.0.1:8080/
+    ProxyPassReverse /ws/ ws://127.0.0.1:8080/
+
+    # Outros ajustes do Apache
+</VirtualHost>
