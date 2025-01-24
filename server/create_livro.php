@@ -9,173 +9,131 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: *');
 
-
+// Decodifica o token e verifica autorização
 $token = decode_token($_POST['id']);
 if (!$token || $token == "erro") {
-    resposta(200, false, "não autorizado");
-} else {
-    oqueAlterar($token->id);
+    resposta(200, false, "Não autorizado");
+    exit;
 }
 
-function oqueAlterar($id)
+function validarEntradas($dados)
 {
-    //! Verificar entrada string, filtrar e etc
-    $nome = false;
-    $foto = false;
-    $selecao = false; 
+    $erros = [];
 
-
-    //TODO verifica se o id veio
-    if (isset($id) || !empty($id)) {
-        //TODO verfica se há nome para alterar
-        if (isset($_POST['nome']) && !empty($_POST['nome'])) {
-            $nome = validar_nome($_POST['nome']);
-            if ($nome[0] == true) {
-                $nome = true;
-            } else {
-                resposta(200, false, $nome[1]);
-            }
-
-
-            if (!empty($_FILES['image']['name']) && isset($_FILES['image']['name'])) {
-                $img = validar_img($_FILES);
-                if ($img[0]) {
-                    $foto = true;
-                } else {
-                    resposta(200, false, $img[1]);
-                }
-            }
-
-            if (!empty($_POST['selecao']) && isset($_POST['selecao'])) {
-                $selecao = true;
-            }
-        } else {
-            resposta(200, false, 'um livro precisa de um nome');
-        }
-        controla($nome, $foto, $selecao, $id);
-    } else {
-        resposta(200, false, "há algo errado, tente movamente mais tarde :(");
+    if (empty($dados['nome'])) {
+        $erros[] = "O campo nome é obrigatório.";
     }
-}
-function controla($nome, $foto, $selecao, $id)
-{
-    $okFoto = false;
 
-    //? cria a conexão
+    if (!empty($_FILES['image']['name']) && !validar_img($_FILES)) {
+        $erros[] = "A imagem enviada é inválida.";
+    }
+
+    return $erros;
+}
+
+$erros = validarEntradas($_POST);
+if (!empty($erros)) {
+    resposta(200, false, implode(" ", $erros));
+    exit;
+}
+
+$idUsuario = $token->id;
+controla($_POST, $_FILES, $idUsuario);
+
+function controla($dados, $arquivos, $idUsuario)
+{
     $conexao = conecta_bd();
     if (!$conexao) {
-        resposta(200, false, "Houve um problema ao conectar ao servidor");
+        resposta(200, false, "Erro ao conectar ao servidor.");
+        return;
+    }
+
+    try {
+        // Insere novo livro e retorna o ID
+        $stmt = $conexao->prepare('INSERT INTO livro_publi (user_id) VALUES (:user_id) RETURNING id');
+        $stmt->bindParam(':user_id', $idUsuario);
+        $stmt->execute();
+        $idLivro = $stmt->fetchColumn();
+
+        // Define diretório de destino
+        $destino = "../livros/$idUsuario/" . $dados['nome'] . "_$idLivro/";
+        if (!is_dir($destino) && !mkdir($destino, 0777, true)) {
+            resposta(200, false, "Erro ao criar diretório para o livro.");
+            return;
+        }
+
+        // Atualiza campos opcionais
+        salvaNome($conexao, $idLivro, $dados['nome']);
+        if (!empty($dados['classificacao'])) {
+            salvaClasse($conexao, $idLivro, $dados['classificacao']);
+        }
+
+        if (!empty($dados['selecao'])) {
+            salaGen($conexao, $idLivro, $dados['selecao']);
+        }
+
+        if (!empty($arquivos['image']['tmp_name'])) {
+            salvaFoto($conexao, $idLivro, $arquivos, $destino);
+        }
+
+        salvaFim($conexao, $idLivro);
+        resposta(200, true, $idLivro);
+
+    } catch (PDOException $e) {
+        resposta(200, false, "Erro no banco de dados: " . $e->getMessage());
+    }
+}
+
+function salvaNome($conexao, $idLivro, $nome)
+{
+    $stmt = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':id', $idLivro);
+    $stmt->execute();
+}
+
+function salvaClasse($conexao, $idLivro, $classificacao)
+{
+    $stmt = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
+    $stmt->bindParam(':classificacao', $classificacao);
+    $stmt->bindParam(':id', $idLivro);
+    $stmt->execute();
+}
+
+function salaGen($conexao, $idLivro, $selecao)
+{
+    $generos = json_encode(array_keys(array_filter(json_decode($selecao, true))));
+    $stmt = $conexao->prepare('UPDATE livro_publi SET genero = :genero WHERE id = :id');
+    $stmt->bindParam(':genero', $generos);
+    $stmt->bindParam(':id', $idLivro);
+    $stmt->execute();
+}
+
+function salvaFoto($conexao, $idLivro, $arquivos, $destino)
+{
+    $extensao = pathinfo($arquivos['image']['name'], PATHINFO_EXTENSION);
+    $nomeUnico = $idLivro . '_' . time() . '.' . $extensao;
+
+    if (move_uploaded_file($arquivos['image']['tmp_name'], $destino . $nomeUnico)) {
+        $stmt = $conexao->prepare('UPDATE livro_publi SET imagem = :imagem WHERE id = :id');
+        $stmt->bindParam(':imagem', $nomeUnico);
+        $stmt->bindParam(':id', $idLivro);
+        $stmt->execute();
     } else {
-
-        $stm = $conexao->prepare('INSERT INTO livro_publi(user_id) VALUES (:user_id)');
-        $stm->bindParam(':user_id', $id);
-        $stm->execute();
-
-        $consulta = $conexao->prepare("SELECT MAX(id) FROM livro_publi WHERE user_id = :user_id");
-        $consulta->execute([':user_id' => $id]);
-        $consulta = $consulta->fetchColumn();
-
-        $destino = '../livros/' . $id . "/" . $_POST['nome'] . '_' . $consulta . '/';
-    }
-
-
-    if (!empty($_POST['classificacao'])) {
-        salvaClasse($conexao, $consulta);
-    }
-
-    if ($nome == true) {
-        salvaNome($conexao, $consulta);
-        if (!is_dir($destino)) {
-            mkdir($destino, 0777, true);
-        }
-    }
-
-    if ($foto == true) {
-        $Img = validar_img($_FILES);
-        if ($Img[0]) {
-            $okFoto = true;
-        } else {
-            resposta(200, false, $Img[1]);
-        }
-    }
-
-    if ($foto == true && $okFoto == true) {
-
-        $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-
-        $nomeUnico = $id . '_' . time() . '.' . $extensao;
-
-        salvaFoto($conexao, $nomeUnico, $consulta, $destino);
-    }
-    if ($selecao == true) {
-        salaGen($conexao, $consulta);
-    }
-    salvaFim($conexao, $consulta);
-
-    resposta(200, true, $consulta);
-}
-
-function salvaFoto($conexao, $nomeUnico, $consulta, $destino)
-{
-
-    $arquivoTemporario = $_FILES['image']['tmp_name'];
-
-    if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)) {
-        $stm = $conexao->prepare('UPDATE livro_publi SET imagem = :imagem WHERE id = :id');
-        $stm->bindParam(':imagem', $nomeUnico);
-        $stm->bindParam(':id', $consulta);
-        $stm->execute();
-    } else {
-        resposta(200, false, "Algo deu errado com o arquivo.");
+        resposta(200, false, "Erro ao salvar a imagem.");
     }
 }
 
-function salvaNome($conexao, $consulta)
+function salvaFim($conexao, $idLivro)
 {
-    $stm = $conexao->prepare('UPDATE livro_publi SET nome = :nome WHERE id = :id');
-    $stm->bindParam(':nome', $_POST['nome']);
-    $stm->bindParam(':id', $consulta);
-    $stm->execute();
-}
-
-function salvaClasse($conexao, $consulta)
-{
-    $stm = $conexao->prepare('UPDATE livro_publi SET classificacao = :classificacao WHERE id = :id');
-    $stm->bindParam(':classificacao', $consulta);
-    $stm->bindParam(':id', $consulta);
-    $stm->execute();
-}
-
-function salaGen($conexao, $consulta)
-{
-    $lista = array();
-
-    $selecao = json_decode($_POST['selecao']);
-
-    foreach ($selecao as $chave => $valor) {
-        if ($valor == true) {
-            $lista[] = $chave;
-        }
-    }
-
-    $lista = json_encode($lista);
-
-    $stmt = $conexao->prepare('UPDATE livro_publi SET genero = ? WHERE id = ?');
-    $stmt->execute([$lista, $consulta]);
-
-}
-
-function salvaFim($conexao, $consulta)
-{
-    $a = array();
-    $a = json_encode($a);
     $data = date('Y-m-d H:i:s');
-    $stm = $conexao->prepare('UPDATE livro_publi SET tempo = :tempo, texto = :texto, pronto = :pronto WHERE id = :id');
-    $stm->bindParam(':tempo', $data);
-    $stm->bindParam(':id', $consulta);
-    $stm->bindParam(':texto', $a);
-    $stm->bindParam(':pronto', $a);
-    $stm->execute();
+    $textoVazio = json_encode([]);
+    $stmt = $conexao->prepare('UPDATE livro_publi SET tempo = :tempo, texto = :texto, pronto = :pronto WHERE id = :id');
+    $stmt->bindParam(':tempo', $data);
+    $stmt->bindParam(':texto', $textoVazio);
+    $stmt->bindParam(':pronto', $textoVazio);
+    $stmt->bindParam(':id', $idLivro);
+    $stmt->execute();
 }
 
 ?>
