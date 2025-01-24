@@ -89,6 +89,7 @@ function controla($nome, $foto, $id, $idioma)
     if (!$conexao) {
         resposta(200, false, "algo errado no server");
     } else {
+        echo "algo";
         if ($foto && $okFoto) {
 
             $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
