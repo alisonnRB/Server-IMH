@@ -41,5 +41,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Expor a porta 80
 EXPOSE 80
 
+CMD ["php", "servidor_chat.php"]
+
 # Usar o script de entrada
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

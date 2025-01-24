@@ -18,7 +18,8 @@ if ($conexaoBD instanceof PDO) {
             new WsServer(
                 new SistemaChat($conexaoBD)
             )
-        ), 8080
+        ),
+        8080
     );
 
     $server->run();
