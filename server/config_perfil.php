@@ -89,7 +89,7 @@ function controla($nome, $foto, $id, $idioma)
     if (!$conexao) {
         resposta(200, false, "algo errado no server");
     } else {
-        echo "algo";
+
         if ($foto && $okFoto) {
 
             $extensao = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -110,7 +110,10 @@ function salvaFoto($conexao, $nomeUnico, $id)
 {
     echo "nome unicio" . $nomeUnico;
 
-    $destino = '../imagens/';
+    $destino = __DIR__ . '/../imagens/';
+    if (!is_dir($destino)) {
+        mkdir($destino, 0775, true); // Cria o diretório com permissões
+    }
 
     //? busca o caminho da foto antiga
     $fotoPerfil = $conexao->prepare("SELECT fotoPerfil FROM usuarios WHERE id = :id");
