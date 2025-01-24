@@ -108,7 +108,6 @@ function controla($nome, $foto, $id, $idioma)
 
 function salvaFoto($conexao, $nomeUnico, $id)
 {
-    echo "nome unicio" . $nomeUnico;
 
     $destino = __DIR__ . '/../imagens/';
     if (!is_dir($destino)) {
@@ -127,14 +126,12 @@ function salvaFoto($conexao, $nomeUnico, $id)
 
     if (file_exists($caminhoAntigo) && is_file($caminhoAntigo)) {
         unlink($caminhoAntigo);
-        echo "apagou a ft antiga";
     }
 
     if (move_uploaded_file($arquivoTemporario, $destino . $nomeUnico)) {
         //? Arquivo antigo foi apagado com sucesso
         $stmt = $conexao->prepare('UPDATE usuarios SET fotoPerfil = ? WHERE id = ?');
         $stmt->execute([$nomeUnico, $id]);
-        echo "salvou a ft nova";
     } else {
         if ($_POST['idioma'] == "PT") {
             resposta(200, false, "Algo deu errado com o arquivo.");
