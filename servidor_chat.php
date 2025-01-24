@@ -19,7 +19,7 @@ if ($conexaoBD instanceof PDO) {
                 new SistemaChat($conexaoBD)
             )
         ),
-        80
+        8080
     );
 
     $server->run();
