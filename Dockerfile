@@ -24,6 +24,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Atualizar o Composer para a versão mais recente
 RUN composer self-update
 
+# Instalar Ratchet
+RUN composer require cboden/ratchet
+
 # Definir o diretório de trabalho
 WORKDIR /var/www/html
 
@@ -40,7 +43,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Configurar Supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
-# Expor a porta 80 e a porta WebSocket (se necessário)
+# Expor a porta 80 e a porta WebSocket
 EXPOSE 80
 EXPOSE 8080
 
