@@ -16,7 +16,7 @@ $server = IoServer::factory(
             new SistemaChat($conexaoBD)
         )
     ),
-    10000
+    8080
 );
 
 $server->run();
