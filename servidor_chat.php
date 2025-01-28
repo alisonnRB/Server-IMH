@@ -22,6 +22,8 @@ if ($conexaoBD instanceof PDO) {
         8080
     );
 
+
+    echo "Servidor WebSocket iniciado na porta 8080...\n";
     $server->run();
 } else {
     echo "A conexão PDO não está correta.";
