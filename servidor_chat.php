@@ -10,13 +10,16 @@ use Ratchet\WebSocket\WsServer;
 
 $conexaoBD = conecta_bd();
 
+$port = getenv('PORT') ?: 8080; // Usar a variável de ambiente ou fallback para 8080 se não estiver definida.
+
 $server = IoServer::factory(
     new HttpServer(
         new WsServer(
             new SistemaChat($conexaoBD)
         )
     ),
-    8080
+    $port
 );
 
+echo "Servidor WebSocket rodando na porta: " . $port . "\n";
 $server->run();
