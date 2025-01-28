@@ -2,6 +2,11 @@
 
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/server/conexao/conexao.php';
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+echo getenv('PORT');
+
 use Api\WebSocket\SistemaChat;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
