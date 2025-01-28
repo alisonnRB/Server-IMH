@@ -1,25 +1,28 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/server/conexao/conexao.php';
-
 use Api\WebSocket\SistemaChat;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 
+
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/server/conexão/conexao.php';
+
 $conexaoBD = conecta_bd();
 
-$port = getenv('PORT') ?: 8080; // Usar a variável de ambiente ou fallback para 8080 se não estiver definida.
+// Certifique-se de que $conexaoBD seja uma instância do PDO
+if ($conexaoBD instanceof PDO) {
+    $server = IoServer::factory(
+        new HttpServer(
+            new WsServer(
+                new SistemaChat($conexaoBD)
+            )
+        ),
+        8080
+    );
 
-$server = IoServer::factory(
-    new HttpServer(
-        new WsServer(
-            new SistemaChat($conexaoBD)
-        )
-    ),
-    $port
-);
-
-echo "Servidor WebSocket rodando na porta: " . $port . "\n";
-$server->run();
+    $server->run();
+} else {
+    echo "A conexão PDO não está correta.";
+}
